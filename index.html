@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Cars24 FM 🎵 music for thinking and driving</title>
+<meta name="description" content="Cars24 FM — 24/7 lo-fi to build to and drive to. Better drives, better lives.">
+<!-- social share card -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Cars24 FM">
+<meta property="og:title" content="Cars24 FM 🎵 better drives, better lives">
+<meta property="og:description" content="24/7 lo-fi to build to and drive to. Real tracks, live AI, and a hype DJ between songs.">
+<meta property="og:image" content="https://vikramchopra.in/cars24-fm/preview.png?v=2">
+<meta property="og:image:width" content="1152">
+<meta property="og:image:height" content="648">
+<meta property="og:url" content="https://vikramchopra.in/cars24-fm/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cars24 FM 🎵 better drives, better lives">
+<meta name="twitter:description" content="24/7 lo-fi to build to and drive to. Real tracks, live AI, and a hype DJ between songs.">
+<meta name="twitter:image" content="https://vikramchopra.in/cars24-fm/preview.png?v=2">
+<style>
+  :root {
+    --bg: #0b0e14;
+    --surface: #161b26;
+    --surface-2: #1f2633;
+    --text: #f1f3f7;
+    --text-dim: #9aa3b2;
+    --blue: #2b6cf6;
+    --orange: #ff7a1a;
+    --live: #ff3d3d;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 24px 16px 64px;
+  }
+  .page { width: 100%; max-width: 920px; }
+
+  /* ---- video frame ---- */
+  .frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #10141f;
+    box-shadow: 0 12px 40px rgba(0,0,0,.5);
+  }
+  canvas#scene {
+    width: 100%;
+    height: 100%;
+    display: block;
+    image-rendering: pixelated;
+  }
+  .vignette {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.35) 100%);
+  }
+  /* ---- values v3 ident: a classy bumper that drifts in between tracks ---- */
+  .values-card {
+    position: absolute; inset: 0; z-index: 6; pointer-events: none;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    padding: 7% 9%; gap: clamp(8px, 1.4vw, 16px);
+    background: radial-gradient(ellipse at center, rgba(8,11,18,.62) 0%, rgba(8,11,18,.9) 100%);
+    -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+    opacity: 0; transition: opacity 1.15s ease;
+  }
+  .values-card.show { opacity: 1; }
+  .values-kicker {
+    font-size: clamp(8px, 1.3vw, 12px); letter-spacing: .46em; text-transform: uppercase;
+    color: var(--blue); font-weight: 600; padding-left: .46em;
+  }
+  .values-num {
+    font-family: "Didot", "Bodoni 72", "Hoefler Text", Garamond, serif;
+    font-style: italic; font-size: clamp(22px, 4.4vw, 40px);
+    color: var(--text-dim); opacity: .55; line-height: 1;
+  }
+  .values-name {
+    font-family: "Didot", "Bodoni 72", "Hoefler Text", Garamond, "Times New Roman", serif;
+    font-size: clamp(26px, 6.2vw, 60px); font-weight: 600; color: #fff;
+    line-height: 1.02; letter-spacing: .005em;
+    transform: translateY(8px); transition: transform 1.15s ease;
+  }
+  .values-card.show .values-name { transform: translateY(0); }
+  .values-rule { width: 40px; height: 2px; background: var(--blue); opacity: .9; }
+  /* brand cards (the mission line + the closer) read bigger and warmer */
+  .values-card.is-brand .values-num { font-style: normal; color: var(--blue); opacity: .8; font-size: clamp(16px,2.4vw,24px); }
+  .values-card.is-brand .values-name { font-size: clamp(30px,7vw,72px); }
+  .values-card.is-brand .values-rule { background: var(--orange); }
+  .values-line {
+    font-family: Georgia, "Times New Roman", serif; font-style: italic;
+    font-size: clamp(11px, 1.95vw, 18px); color: var(--text-dim);
+    max-width: 68%; line-height: 1.5;
+  }
+  .badge-row {
+    position: absolute; top: 12px; left: 12px;
+    display: flex; gap: 8px; align-items: center;
+  }
+  .live-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--live); color: #fff;
+    font-size: 12px; font-weight: 700; letter-spacing: .5px;
+    padding: 4px 10px; border-radius: 6px;
+  }
+  .live-dot {
+    width: 7px; height: 7px; border-radius: 50%; background: #fff;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+  .viewers-badge {
+    background: rgba(0,0,0,.55); color: #fff;
+    font-size: 12px; padding: 4px 10px; border-radius: 6px;
+  }
+
+  /* big play overlay */
+  .play-overlay {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+    background: rgba(8,10,16,.45);
+    cursor: pointer;
+    transition: opacity .3s;
+  }
+  .play-overlay.hidden { opacity: 0; pointer-events: none; }
+  .play-btn {
+    width: 84px; height: 84px; border-radius: 50%;
+    background: var(--orange);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 30px rgba(255,122,26,.45);
+    transition: transform .15s;
+  }
+  .play-overlay:hover .play-btn { transform: scale(1.07); }
+  .play-btn svg { margin-left: 6px; }
+  .play-hint { color: #fff; font-size: 14px; opacity: .9; }
+
+  /* control bar */
+  .controls {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px 14px;
+    background: linear-gradient(transparent, rgba(0,0,0,.7));
+    opacity: 0; transition: opacity .25s;
+  }
+  .frame:hover .controls, .frame.playing .controls { opacity: 1; }
+  .ctrl-btn {
+    background: none; border: none; color: #fff; cursor: pointer;
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ctrl-btn:hover { background: rgba(255,255,255,.15); }
+  input[type="range"] {
+    -webkit-appearance: none; appearance: none;
+    width: 90px; height: 4px; border-radius: 2px;
+    background: rgba(255,255,255,.35); outline: none; cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 13px; height: 13px; border-radius: 50%; background: #fff;
+  }
+  .ctrl-live { display: flex; align-items: center; gap: 6px; color: #fff; font-size: 12px; font-weight: 700; }
+  .ctrl-live .live-dot { background: var(--live); }
+  .ctrl-spacer { flex: 1; }
+
+  /* ---- info section ---- */
+  .info { margin-top: 18px; }
+  h1 { font-size: 21px; font-weight: 700; line-height: 1.35; }
+  .now-playing {
+    margin-top: 8px; font-size: 13px; color: var(--orange);
+    letter-spacing: .3px; font-variant-numeric: tabular-nums;
+  }
+  .chips { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+  .chip {
+    background: var(--surface); border-radius: 12px;
+    padding: 10px 18px; text-align: center; min-width: 92px;
+  }
+  .chip b { display: block; font-size: 15px; }
+  .chip span { font-size: 12px; color: var(--text-dim); }
+  .desc {
+    background: var(--surface); border-radius: 12px;
+    padding: 14px 16px; margin-top: 14px;
+    font-size: 14px; line-height: 1.6; color: var(--text);
+  }
+  .desc .sub { color: var(--text-dim); font-size: 13px; margin-top: 8px; }
+  .channel {
+    display: flex; align-items: center; gap: 12px; margin-top: 18px;
+  }
+  .avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), #1c4cc0);
+    color: #fff; font-weight: 800; font-size: 15px;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid var(--orange);
+  }
+  .channel-meta { flex: 1; }
+  .channel-meta b { display: block; font-size: 15px; }
+  .channel-meta span { font-size: 12px; color: var(--text-dim); }
+  .subscribe {
+    background: var(--orange); color: #14181f; border: none;
+    font-weight: 700; font-size: 14px;
+    padding: 9px 18px; border-radius: 20px; cursor: pointer;
+  }
+  .subscribe.subbed { background: var(--surface-2); color: var(--text-dim); }
+  .footnote { margin-top: 28px; font-size: 12px; color: var(--text-dim); line-height: 1.6; }
+  .footnote a { color: var(--blue); }
+  kbd {
+    background: var(--surface-2); border-radius: 4px; padding: 1px 6px;
+    font-size: 11px; font-family: monospace;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="frame" id="frame">
+    <canvas id="scene" width="192" height="108"></canvas>
+    <div class="vignette"></div>
+    <div class="values-card" id="valuesCard">
+      <div class="values-kicker" id="vKicker">Cars24 · our values</div>
+      <div class="values-num" id="vNum">01</div>
+      <div class="values-name" id="vName">Customer love</div>
+      <div class="values-rule"></div>
+      <div class="values-line" id="vLine"></div>
+    </div>
+    <div class="badge-row">
+      <div class="live-badge"><span class="live-dot"></span>LIVE</div>
+      <div class="viewers-badge"><span id="viewers">4</span> watching now</div>
+    </div>
+    <div class="play-overlay" id="playOverlay">
+      <div class="play-btn">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="#14181f"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+      <div class="play-hint">Tap anywhere to play</div>
+    </div>
+    <div class="controls">
+      <button class="ctrl-btn" id="btnPlay" title="Play/Pause (space)">
+        <svg id="icoPlay" width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="icoPause" width="22" height="22" viewBox="0 0 24 24" fill="#fff" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+      </button>
+      <button class="ctrl-btn" id="btnMute" title="Mute (m)">
+        <svg id="icoVol" width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>
+        <svg id="icoMuted" width="22" height="22" viewBox="0 0 24 24" fill="#fff" style="display:none"><path d="M3 9v6h4l5 5V4L7 9H3zm13.6 3 2.7-2.7-1.4-1.4-2.7 2.7-2.7-2.7-1.4 1.4 2.7 2.7-2.7 2.7 1.4 1.4 2.7-2.7 2.7 2.7 1.4-1.4-2.7-2.7z"/></svg>
+      </button>
+      <input type="range" id="vol" min="0" max="100" value="80" title="Volume">
+      <div class="ctrl-live"><span class="live-dot"></span>LIVE</div>
+      <div class="ctrl-spacer"></div>
+      <button class="ctrl-btn" id="btnFull" title="Fullscreen (f)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="info">
+    <h1>Cars24 FM 🎵 music for thinking and driving</h1>
+    <div class="now-playing" id="nowPlaying">♫ press play to start the set</div>
+    <div class="chips">
+      <div class="chip"><b id="likes">215</b><span>Likes</span></div>
+      <div class="chip"><b id="viewers2">4</b><span>Viewers</span></div>
+      <div class="chip"><b>12 Jun</b><span>2026</span></div>
+    </div>
+    <div class="desc">
+      Press play and keep moving. Made and curated for car people. 🚗
+      <div class="sub">
+        Hundreds of hand-picked Creative Commons tracks, woven with AI lo-fi
+        generated live in your browser — so the stream never repeats and never stops.
+        Between songs a DJ reads our values and vision aloud, worded differently every time.
+        Shortcuts: <kbd>space</kbd> play/pause · <kbd>m</kbd> mute · <kbd>f</kbd> fullscreen
+      </div>
+    </div>
+    <div class="channel">
+      <div class="avatar">24</div>
+      <div class="channel-meta">
+        <b>Cars24</b>
+        <span>420k subscribers</span>
+      </div>
+      <button class="subscribe" id="btnSub">Subscribe</button>
+    </div>
+    <div class="footnote">
+      An unofficial concept — a Cars24 take on Anthropic's
+      <a href="https://www.youtube.com/live/tRsQsTMvPNg" target="_blank" rel="noopener">Claude FM</a>
+      ("music for thinking and building"). Not affiliated with YouTube or Anthropic.
+      <br>Music: Creative Commons (CC&nbsp;BY) by Chris Zabriskie, Kevin MacLeod
+      (<a href="https://incompetech.com" target="_blank" rel="noopener">incompetech.com</a>),
+      Lee Rosevere, Broke For Free, Jahzzar, Kai Engel and others — via the
+      <a href="https://archive.org" target="_blank" rel="noopener">Internet Archive</a>.
+      <br>DJ voice generated with ElevenLabs.
+      <br><span style="opacity:.6">build 2026-06-14a self-hosted low-latency library (150 tracks) + multi-genre</span>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   Cars24 FM — pixel scene + generative lo-fi engine
+   ================================================================ */
+
+/* ----------------------- audio engine ----------------------- */
+// Default beat used only for the fixed echo time; real tempo is per-track.
+const BEAT = 60 / 72;
+const BAR = BEAT * 4;
+
+const audio = {
+  ctx: null, master: null, melBus: null,
+  playing: false, startTime: 0, curBpm: 72,
+  barStart: 0, barIndex: 0, stepInBar: 0, nextStepTime: 0,
+  timer: null, muted: false, volume: 0.8,
+};
+
+const midiHz = m => 440 * Math.pow(2, (m - 69) / 12);
+const beatLen = bpm => 60 / bpm;          // seconds per beat at a given tempo
+const barLen  = sec => beatLen(sec.bpm) * 4;
+
+// Tracks are GENERATED, not chosen from a list — so the stream is endless and
+// never repeats. Each new track randomizes tempo, key, chord progression,
+// groove, bass, instrument and a fresh name, while staying musically coherent:
+// chords are diatonic 7ths in C (transposed by `key`) and the melody is a C
+// pentatonic, so everything stays consonant no matter the combination.
+const CHORD_POOL = [        // I ii iii IV V vi as maj7/m7 voicings in C
+  [48,52,55,59], // Cmaj7
+  [50,53,57,60], // Dm7
+  [52,55,59,62], // Em7
+  [53,57,60,64], // Fmaj7
+  [55,59,62,65], // G7
+  [57,60,64,67], // Am7
+];
+const PROGRESSIONS = [
+  [3,2,1,0],[5,1,4,0],[0,5,3,4],[1,4,0,5],[3,4,2,5],
+  [0,3,1,4],[5,3,0,4],[1,2,3,4],[0,4,5,3],[2,5,1,4],
+];
+const MEL_POOL = [60,62,64,67,69,72,74];   // C major pentatonic, base register
+const FEELS = ['boombap','boombap','boombap','four','half','ambient'];
+const ADJ = ['midnight','neon','slow','rainy','golden','dusty','late','electric',
+  'velvet','hazy','distant','amber','quiet','deep','northern','lonely','warm',
+  'silver','faded','endless','soft','crimson','idle','low'];
+const NOUN = ['drive','rain','lights','hum','lane','garage','shift','dawn','haze',
+  'cruise','motel','signal','dusk','orbit','tide','static','mirage','traffic',
+  'horizon','engine','radio','afterglow','interlude','detour'];
+const rint = n => Math.floor(Math.random() * n);
+const pick = a => a[rint(a.length)];
+
+// genre presets — the generative engine isn't lo-fi only. Each sets tempo,
+// groove (feel → drum pattern), timbres and density, so interludes span styles.
+const GENRES = [
+  { g: 'lo-fi',     feel: 'boombap', bpm: [70, 86],   swing: [0.54, 0.62], kits: ['soft', 'tape'],   mel: ['sine', 'triangle', 'bell'],   pad: ['triangle', 'sine'],            bass: ['sub', 'pluck'], dens: [0.34, 0.52] },
+  { g: 'jazzhop',   feel: 'boombap', bpm: [74, 90],   swing: [0.55, 0.62], kits: ['soft', 'tape'],   mel: ['bell', 'triangle', 'square'], pad: ['triangle', 'sine'],            bass: ['pluck', 'sub'], dens: [0.32, 0.5] },
+  { g: 'boom-bap',  feel: 'boombap', bpm: [84, 94],   swing: [0.54, 0.6],  kits: ['punchy', 'tape'], mel: ['square', 'bell', 'triangle'], pad: ['triangle', 'sawtooth'],        bass: ['sub'],          dens: [0.4, 0.56] },
+  { g: 'synthwave', feel: 'four',    bpm: [102, 118], swing: [0.5, 0.5],   kits: ['punchy'],         mel: ['square', 'triangle'],         pad: ['sawtooth', 'sawtooth'],        bass: ['sub'],          dens: [0.46, 0.62] },
+  { g: 'house',     feel: 'four',    bpm: [120, 126], swing: [0.5, 0.5],   kits: ['punchy'],         mel: ['square'],                     pad: ['sawtooth'],                    bass: ['sub'],          dens: [0.5, 0.66] },
+  { g: 'ambient',   feel: 'ambient', bpm: [62, 76],   swing: [0.5, 0.5],   kits: ['soft'],           mel: ['sine', 'triangle'],           pad: ['sine', 'triangle', 'sawtooth'], bass: ['none'],        dens: [0.2, 0.3] },
+];
+// weighted toward beat-driven, melodic genres so the engine never drones (ambient is rare)
+const GENRE_POOL = [0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 5];
+function makeTrack(opener) {
+  const G = opener ? GENRES[2] : GENRES[pick(GENRE_POOL)];   // opener = punchy boom-bap
+  const rng = r => r[0] + Math.random() * (r[1] - r[0]);
+  const feel = G.feel;
+  return {
+    name: pick(ADJ) + ' ' + pick(NOUN),
+    genre: G.g,
+    bpm: Math.round(rng(G.bpm)),
+    key: opener ? 0 : rint(11) - 5,
+    swing: rng(G.swing),
+    feel, bass: pick(G.bass),
+    chords: pick(PROGRESSIONS).map(i => CHORD_POOL[i]),
+    mel: MEL_POOL,
+    density: rng(G.dens),
+    melType: pick(G.mel),
+    padType: pick(G.pad),
+    kit: pick(G.kits),
+    octave: pick([-12, 0, 0, 0, 12]),
+    padCut: 850 + rint(1100),
+  };
+}
+
+let track = makeTrack(true);
+let currentSectionName = track.name;
+let lastMel = -1;
+
+function nextTrack() {
+  track = makeTrack(false);
+  currentSectionName = track.name;
+}
+
+/* ---------- real-music playlist mode (optional) ----------
+   Drop royalty-free tracks into cars24-fm/music/ and list their filenames in
+   cars24-fm/music/playlist.json, e.g. ["track-one.mp3","track-two.mp3"].
+   If that file has entries, the channel plays those real tracks (shuffled,
+   continuous, crossfaded) instead of the built-in generative engine. If it's
+   missing or empty, the generative engine plays — so the page always works. */
+const playlist = { tracks: [], queue: [], el: null, gain: null, idx: 0, on: false,
+  // hybrid rotation: real tracks interleaved with on-the-fly AI-generated interludes
+  mode: 'track', count: 0, genEvery: 4, genTimer: null };
+
+/* ---- Cars24 values v3 + vision: shown on screen AND read aloud DJ-style ----
+   `line` is the on-screen text; `say` holds spoken paraphrases. The DJ wraps a
+   random `say` with a random opener + sign-off, so it lands different each time. */
+const VALUES = [
+  { kicker: 'Cars24', num: '◆', name: 'Better drives, better lives', brand: true,
+    line: 'Why we exist. Every car we touch should leave a life a little better than we found it.',
+    say: ['Here’s what gets us out of bed — better drives, better lives! Think about it. The first car. The family trip. The loan that changed everything. Somebody’s whole world rides in that car, and we leave it a little better than we found it!',
+          'Better drives, better lives — that’s not a slogan, that’s the mission! Every ride, every owner, every street. We’re here to make the whole thing better. Let’s gooo!',
+          'We’re creating certainty in an uncertain world — one car, one family, one better life at a time! That is Cars24, baby!'] },
+  { kicker: 'Cars24 · our values', num: '01', name: 'Customer love',
+    line: 'A car sits in someone’s biography. Seen and understood is the bar — anything less is a failure of love.',
+    say: ['Check it — a car is never just a product, it sits in someone’s life story! Seen and understood, that is the bar, and we do not miss it.',
+          'We exist for the person across that desk! If it were your own family sitting there, would it be good enough? That is the test.'] },
+  { kicker: 'Cars24 · our values', num: '02', name: 'Builder mindset',
+    line: 'There is one role here: Builder. Find the biggest problem and own it. Nobody is coming to give permission.',
+    say: ['There is one role here, and one role only — Builder! You find the biggest problem and you own it. Nobody is coming to give permission.',
+          'Real talk — if the problem you are working on does not give you butterflies, it is not big enough! Go bigger.'] },
+  { kicker: 'Cars24 · our values', num: '03', name: 'Seek truth',
+    line: 'Say the hard thing in the room, even when it stings. Comfort is where truth goes to die.',
+    say: ['Say the hard thing in the room, even when it stings! Comfort is where truth goes to die.',
+          'No nodding in the meeting and disagreeing later — truth, to the face! That is how we roll.'] },
+  { kicker: 'Cars24 · our values', num: '04', name: 'Whatever we tolerate becomes our culture',
+    line: 'Every behaviour we tolerate becomes the policy we never wrote. We benchmark to best, not better.',
+    say: ['Listen up — every behaviour we tolerate becomes the policy we never wrote!',
+          'We benchmark to the best, not better. Better is the trap that keeps companies stuck, so we aim higher!'] },
+  { kicker: 'Cars24 · our values', num: '05', name: 'Better humans',
+    line: 'How we behave when it is hardest is who we actually are. Become better humans through the work.',
+    say: ['How we behave when it is hardest? That is who we actually are!',
+          'We are not trying to be a good company that does good things — we are becoming better humans by doing the work!'] },
+  { kicker: 'Cars24', num: '◆', name: 'One thing, said five ways', brand: true,
+    line: 'We exist for the customer, we build, we tell the truth, we hold the standard, and we become better humans by doing all of it. That is Cars24.',
+    say: ['Five values, but really one thing said five ways! We exist for the customer, we build, we tell the truth, we hold the standard, and we become better humans doing it. That is Cars24!',
+          'It all comes back to one thing — better drives, better lives! Let’s go!'] },
+  // ---- ideas / mental models (indices 7+) ----
+  { kicker: 'Cars24 · ideas', num: '✦', name: 'Paranoid survive, regulated thrive',
+    line: 'Stay paranoid enough to survive. Stay regulated enough to thrive.',
+    say: ['The paranoid survive. The regulated thrive. Stay sharp, stay disciplined.',
+          'Fear keeps you alive. Discipline makes you win. Run both.'] },
+  { kicker: 'Cars24 · ideas', num: '✦', name: 'Respond, don’t react',
+    line: 'React and you’re a passenger. Respond and you’re driving.',
+    say: ['React and you’re a passenger. Respond and you’re driving.',
+          'The gap between react and respond is the whole game. Live in it.'] },
+  { kicker: 'Cars24 · ideas', num: '✦', name: 'Find the leverage point',
+    line: 'Don’t push harder. Push where the lever is.',
+    say: ['Don’t work harder on the wrong thing. Find the lever, push there.',
+          'A small push in the right place moves everything. Find the leverage point.'] },
+  { kicker: 'Cars24 · ideas', num: '✦', name: 'Compounding',
+    line: 'Small, honest, daily. That’s how it compounds.',
+    say: ['Every honest, harder, braver choice compounds. Small, daily, relentless.',
+          'You don’t see compounding until it’s undeniable. Keep stacking days.'] },
+  { kicker: 'Cars24 · ideas', num: '✦', name: 'First principles',
+    line: 'Don’t reason by analogy. Reason from what’s true.',
+    say: ['Don’t reason by analogy. Boil it to first principles, build back up.',
+          'Strip it to what’s actually true, then rebuild from there.'] },
+  { kicker: 'Cars24 · ideas', num: '✦', name: '10x, not 10%',
+    line: '10% is grinding. 10x is rethinking.',
+    say: ['Ten x, not ten percent. Different question, different answer.',
+          'Ten percent is grinding. Ten x is rethinking. Go for the rethink.'] },
+  { kicker: 'Cars24 · ideas', num: '✦', name: 'Strong views, held loosely',
+    line: 'Hold hypotheses, not certainties.',
+    say: ['Hold hypotheses, not certainties. Be right early, change fast.',
+          'Being right early looks like being wrong. Have the view anyway.'] },
+  // ---- the five dysfunctions of a team ----
+  { kicker: 'Cars24 · teamwork', num: '✦', name: 'Trust starts with vulnerability',
+    line: 'No trust, no team. It starts when you drop the armor.',
+    say: ['Trust starts with vulnerability. Say I was wrong. Say I need help. That’s strength.',
+          'No trust, no team. It starts the moment you drop the armor.'] },
+  { kicker: 'Cars24 · teamwork', num: '✦', name: 'Mine for conflict',
+    line: 'Fear of conflict is fear of progress.',
+    say: ['Fear of conflict is fear of progress. Mine for the disagreement. Best idea wins.',
+          'Harmony that hides the truth is fake. Have the real argument.'] },
+  { kicker: 'Cars24 · teamwork', num: '✦', name: 'Disagree and commit',
+    line: 'Clarity beats consensus. Decide and move.',
+    say: ['Disagree and commit. Clarity beats consensus. Decide and move.',
+          'You don’t need everyone to agree. You need everyone to commit.'] },
+  { kicker: 'Cars24 · teamwork', num: '✦', name: 'Peer accountability',
+    line: 'The best teams police themselves.',
+    say: ['Hold your peers to it. Silence is complicity. Call it, with care.',
+          'The best teams police themselves. Accountability is peer to peer.'] },
+  { kicker: 'Cars24 · teamwork', num: '✦', name: 'Results over ego',
+    line: 'The only scoreboard is the team’s result.',
+    say: ['Ego and status are the enemy. The only scoreboard is the team’s result.',
+          'Individual stats don’t matter if the team loses. Results over ego.'] },
+];
+
+/* ---- the DJ: reads a value or the vision aloud between tracks, varied each
+   time, ducking the music underneath. Uses the browser's built-in speech, so
+   there are no audio files, no API keys, and it works offline. ---- */
+const dj = {
+  voice: null, last: '', welcomed: false, enabled: ('speechSynthesis' in window),
+  openers: ['Cars24 FM — make some noise!', 'Yo, hands up, you’re on Cars24 FM!',
+    'Cars24 FM, let’s turn it UP!', 'Ohhh this is Cars24 FM, let’s gooo!',
+    'Cars24 FM in the house!', 'Feel that energy — Cars24 FM!',
+    'Cars24 FM, keep it loud!', 'Let’s ride — Cars24 FM!'],
+  signoffs: ['Now let’s gooo!', 'Hands up, here we go!', 'Drop it back in!', 'Turn it UP!',
+    'Let’s ride!', 'Keep it loud!', '', 'Cars24 — let’s build!'],
+  welcomes: [
+    'Cars24 FM — hands up! Music to build to, music to drive to. Better drives, better lives. Let’s go!',
+    'You’re on Cars24 FM. Lock in. Turn it up. Better drives, better lives.',
+    'Cars24 FM, live! The sound of momentum. Better drives, better lives. Let’s build.',
+    'Welcome to Cars24 FM. Foot on the gas. Better drives, better lives. Here we go!',
+    'Cars24 FM in the house! Headphones on, world off. Better drives, better lives.',
+  ],
+  // shown when someone opens the channel AGAIN the same day
+  welcomeBacks: [
+    'Back already? Let’s gooo! Cars24 FM.',
+    'Welcome back to Cars24 FM. Couldn’t stay away, huh?',
+    'You again — love it! Cars24 FM, let’s ride.',
+    'Round two on Cars24 FM. Right where we left off.',
+    'Look who’s back! Cars24 FM, turn it up.',
+  ],
+  // pick an energetic American voice (falls back to any English voice on the listener’s OS)
+  pickVoice() {
+    const vs = (speechSynthesis.getVoices && speechSynthesis.getVoices()) || [];
+    const us = vs.filter(v => /en[-_]US/i.test(v.lang));
+    const pool = us.length ? us : vs.filter(v => /^en(-|_|$)/i.test(v.lang));
+    const pref = ['Samantha', 'Nicky', 'Aaron', 'Google US English', 'Junior', 'Alex', 'Fred'];
+    for (const p of pref) { const v = pool.find(x => x.name === p); if (v) return v; }
+    return pool[0] || vs[0] || null;
+  },
+  // Speak over the music, BLENDED (music stays loud, voice rides on top). To beat
+  // the flat monotone of browser TTS, the line is split into phrases and each is
+  // spoken as its own utterance with its own pitch/rate — rising on exclamations,
+  // wobbling between phrases — so it accentuates and modulates like a real DJ.
+  utter(text) {
+    if (!this.enabled || !audio.ctx) return;
+    this.last = text;
+    if (!this.voice) this.voice = this.pickVoice();
+    const d = audio.duck, t = () => audio.ctx.currentTime;
+    const lang = (this.voice && /en[-_]US/i.test(this.voice.lang)) ? this.voice.lang : 'en-US';
+    // gentle blend: keep music ~65% under the voice instead of cutting it out
+    const down = () => { if (d) { d.gain.cancelScheduledValues(t()); d.gain.setTargetAtTime(0.72, t(), 0.3); } };
+    const up   = () => { if (d) d.gain.setTargetAtTime(1, t(), 0.7); };
+    const parts = (text.match(/[^.!?—]+[.!?—]*/g) || [text]).map(s => s.trim()).filter(Boolean);
+    let pending = parts.length;
+    try { speechSynthesis.cancel(); } catch (e) {}
+    parts.forEach((p, i) => {
+      const u = new SpeechSynthesisUtterance(p);
+      if (this.voice) u.voice = this.voice;
+      u.lang = lang;
+      const excited = /[!?]\s*$/.test(p);
+      const caps = /\b[A-Z]{2,}\b/.test(p);            // shouted words like "UP", "GO"
+      const wobble = (i % 2 === 0 ? 0.06 : -0.05);     // alternate phrase contour
+      u.pitch = Math.min(1.5, 1.0 + wobble + (excited ? 0.22 : 0) + (caps ? 0.1 : 0));
+      u.rate  = 1.02 + (excited ? 0.12 : 0) + (caps ? 0.06 : 0) + i * 0.01;
+      u.volume = 1;
+      if (i === 0) u.onstart = down;
+      u.onend = u.onerror = () => { if (--pending <= 0) up(); };
+      try { speechSynthesis.speak(u); } catch (e) { if (--pending <= 0) up(); }
+    });
+  },
+  speak(v) {
+    const pick = a => a[Math.floor(Math.random() * a.length)];
+    let text;
+    do {
+      text = [pick(this.openers), pick(v.say), pick(this.signoffs)].filter(Boolean).join(' ');
+    } while (text === this.last && v.say.length > 1);
+    this.utter(text);
+  },
+
+  // ---- pre-rendered ElevenLabs clips (preferred path): a real, modulated voice
+  // that blends with the music and carries to an OBS/YouTube stream. Falls back
+  // to browser speech automatically if the manifest/clips aren't present. ----
+  manifest: null, el: null, lastWelcome: -1, _lastBreak: {}, queue: [],
+  ensureEl() {
+    if (this.el || !audio.ctx) return;
+    const el = new Audio();
+    el.preload = 'auto';
+    audio.ctx.createMediaElementSource(el).connect(audio.djGain);
+    el.addEventListener('ended', () => this._advance());
+    el.addEventListener('error', () => this._advance());
+    this.el = el;
+  },
+  _advance() {   // play the next queued clip back-to-back, else release the duck
+    if (this.queue && this.queue.length) { this.el.src = this.queue.shift(); this.el.play().catch(() => this.unduck()); }
+    else this.unduck();
+  },
+  // shallow, smooth duck: music stays present (~72%) and glides down/up so the
+  // voice and the track feel mixed together rather than one cutting the other.
+  duckDown() { const d = audio.duck; if (d) { const t = audio.ctx.currentTime; d.gain.cancelScheduledValues(t); d.gain.setTargetAtTime(0.72, t, 0.3); } },
+  unduck()   { const d = audio.duck; if (d) d.gain.setTargetAtTime(1, audio.ctx.currentTime, 0.7); },
+  // play one or more clips back-to-back over a single duck (longer DJ segments)
+  playSeq(urls) {
+    this.ensureEl();
+    if (!this.el || !urls.length) return false;
+    this.queue = urls.slice(1);
+    this.duckDown();
+    this.el.src = urls[0];
+    this.el.play().catch(() => this.unduck());
+    return true;
+  },
+  playClip(src) { return this.playSeq([src]); },
+  // pick a non-repeating index for clip array `arr`, remembering last via `key`
+  fresh(arr, key) {
+    if (this._lastBreak[key] == null) this._lastBreak[key] = -1;
+    let i = Math.floor(Math.random() * arr.length);
+    if (arr.length > 1 && i === this._lastBreak[key]) i = (i + 1) % arr.length;
+    this._lastBreak[key] = i; return i;
+  },
+  // a between-track break for value index `vi`. Mostly a short ~10–15s drop;
+  // ~1 in 4 runs longer (a second drop) for variety, so it never overstays.
+  break(vi, v) {
+    const m = this.manifest;
+    if (m && m.breaks && m.breaks[vi] && m.breaks[vi].length && audio.ctx) {
+      const seq = ['music/' + m.breaks[vi][this.fresh(m.breaks[vi], 'b' + vi)]];
+      if (Math.random() < 0.28) {
+        let j = Math.floor(Math.random() * m.breaks.length);
+        if (j === vi) j = (j + 1) % m.breaks.length;
+        const b = m.breaks[j];
+        if (b && b.length) seq.push('music/' + b[this.fresh(b, 'b' + j)]);
+      }
+      if (this.playSeq(seq)) return;
+    }
+    this.speak(v);   // fallback: browser speech
+  },
+  // one-time greeting when a listener first presses play. Returning the SAME day
+  // gets a different "welcome back" greeting instead of the first-time one.
+  welcome() {
+    if (this.welcomed) return;
+    this.welcomed = true;
+    let returning = false;
+    try {
+      const today = new Date().toISOString().slice(0, 10);
+      const prev = JSON.parse(localStorage.getItem('c24fm_visit') || '{}');
+      returning = (prev.date === today);
+      localStorage.setItem('c24fm_visit', JSON.stringify({ date: today, count: (returning ? (prev.count || 1) : 0) + 1 }));
+    } catch (e) { /* private mode etc. — just treat as first-time */ }
+    const m = this.manifest;
+    const clips = m && (returning && m.welcomesBack && m.welcomesBack.length ? m.welcomesBack : m.welcomes);
+    if (clips && clips.length && audio.ctx) {
+      let i = Math.floor(Math.random() * clips.length);
+      if (clips.length > 1 && i === this.lastWelcome) i = (i + 1) % clips.length;
+      this.lastWelcome = i;
+      // greeting + a mission/value drop, back-to-back, for a fuller intro
+      const seq = ['music/' + clips[i]];
+      if (m.breaks && m.breaks[0] && m.breaks[0].length) seq.push('music/' + m.breaks[0][this.fresh(m.breaks[0], 'b0')]);
+      if (this.playSeq(seq)) return;
+    }
+    const pick = a => a[Math.floor(Math.random() * a.length)];
+    this.utter(pick(returning ? this.welcomeBacks : this.welcomes));   // fallback: browser speech
+  },
+};
+if (dj.enabled && speechSynthesis.onvoiceschanged === null) {
+  speechSynthesis.onvoiceschanged = () => { dj.voice = dj.pickVoice(); };
+}
+async function loadDJ() {
+  try {
+    const res = await fetch('music/dj/manifest.json', { cache: 'no-store' });
+    if (res.ok) dj.manifest = await res.json();
+  } catch (e) { /* no clips -> browser-speech fallback */ }
+}
+
+// A station break: show the value/vision card AND have the DJ talk over it.
+function stationBreak() {
+  const v = valuesUI.show();
+  dj.break(valuesUI.shownIndex, v);
+}
+
+const valuesUI = {
+  card: null, kicker: null, num: null, name: null, line: null, idx: 0, hideTimer: null,
+  show() {
+    if (!this.card) {
+      this.card   = document.getElementById('valuesCard');
+      this.kicker = document.getElementById('vKicker');
+      this.num    = document.getElementById('vNum');
+      this.name   = document.getElementById('vName');
+      this.line   = document.getElementById('vLine');
+    }
+    const i = this.idx % VALUES.length;
+    this.shownIndex = i;
+    const v = VALUES[i];
+    this.idx++;
+    this.kicker.textContent = v.kicker;
+    this.num.textContent = v.num;
+    this.name.textContent = v.name;
+    this.line.textContent = v.line;
+    this.card.classList.toggle('is-brand', !!v.brand);
+    this.card.classList.add('show');
+    clearTimeout(this.hideTimer);
+    this.hideTimer = setTimeout(() => this.card.classList.remove('show'), 9500);
+    return v;
+  },
+  hide() { if (this.card) { clearTimeout(this.hideTimer); this.card.classList.remove('show'); } },
+};
+
+function prettifyName(file) {
+  // works for local filenames AND full archive.org URLs
+  let s = file;
+  try { s = decodeURIComponent(file); } catch (e) { /* keep raw */ }
+  s = s.split('?')[0].split('/').pop().replace(/\.[a-z0-9]+$/i, '');  // filename, no ext
+  const parts = s.split(' - ');                 // "Artist - Album - 03 Title" -> "03 Title"
+  if (parts.length > 1) s = parts[parts.length - 1];
+  s = s.replace(/^\s*\d{1,3}[\s._-]+/, '');      // strip a leading track number
+  return s.replace(/_+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) { const j = rint(i + 1); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+
+async function loadPlaylist() {
+  try {
+    const res = await fetch('music/playlist.json', { cache: 'no-store' });
+    if (!res.ok) return;
+    const list = await res.json();
+    if (Array.isArray(list) && list.length) playlist.tracks = list.filter(s => typeof s === 'string');
+  } catch (e) { /* no playlist -> generative fallback */ }
+}
+
+// Advance the rotation. Most slots are real tracks (local file OR full URL);
+// every `genEvery` slots we hand off to the live AI engine for an interlude,
+// so generated music plays *alongside* the real catalogue, never just instead.
+function playlistNext() {
+  if (!audio.playing) return;
+  playlist.count++;
+  if (playlist.genEvery && playlist.count > 1 && playlist.count % playlist.genEvery === 0) {
+    startGenInterlude();
+    return;
+  }
+  playlist.mode = 'track';
+  if (!playlist.queue.length) playlist.queue = shuffle(playlist.tracks.slice());
+  const entry = playlist.queue.shift();
+  currentSectionName = prettifyName(entry);
+  // absolute URLs (archive.org streams) are used as-is; bare names live in music/
+  playlist.el.src = /^https?:\/\//i.test(entry) ? entry : 'music/' + encodeURIComponent(entry);
+  playlist.el.play().catch(() => {});
+  // slow stream? bridge with live generative audio until the track is ready
+  clearTimeout(playlist.bufTimer);
+  playlist.bufTimer = setTimeout(() => {
+    if (playlist.on && audio.playing && playlist.mode === 'track' && playlist.el.readyState < 3) bridgeGenerative();
+  }, 250);
+  if (playlist.count % 3 === 0) stationBreak();   // DJ + value card every few tracks
+}
+
+// Bridge: play the instant in-browser generative engine while a real track buffers,
+// so there's never a silent wait on a slow stream. Ends the moment the track plays.
+function bridgeGenerative() {
+  if (playlist.bridging || playlist.mode !== 'track' || !audio.playing) return;
+  playlist.bridging = true;
+  startGenerative(true);
+}
+function endBridge() {
+  clearTimeout(playlist.bufTimer);
+  if (playlist.bridging) { playlist.bridging = false; stopGenerative(); }
+}
+
+// One AI-generated interlude, then back to the real-track rotation.
+function startGenInterlude() {
+  playlist.mode = 'gen';
+  if (playlist.el) { try { playlist.el.pause(); } catch (e) {} }
+  startGenerative(true);
+  currentSectionName = 'Cars24 FM · live AI mix';   // generated on the fly, in-browser
+  stationBreak();                                    // DJ intro over every AI mix
+  const dur = 45000 + Math.floor(Math.random() * 35000);   // ~45–80s
+  if (playlist.genTimer) clearTimeout(playlist.genTimer);
+  playlist.genTimer = setTimeout(() => { stopGenerative(); playlistNext(); }, dur);
+}
+
+function startPlaylist() {
+  const { ctx, master } = audio;
+  if (!playlist.el) {
+    const el = new Audio();
+    el.crossOrigin = 'anonymous';
+    el.preload = 'auto';
+    el.addEventListener('ended', playlistNext);
+    el.addEventListener('playing', () => { if (playlist.mode === 'track') endBridge(); });   // real track started -> drop the bridge
+    el.addEventListener('waiting', () => { if (playlist.mode === 'track') bridgeGenerative(); }); // stalled mid-stream -> bridge
+    el.addEventListener('error', () => {           // dead/blocked URL -> bridge + skip on
+      if (playlist.on && audio.playing && playlist.mode === 'track') { bridgeGenerative(); setTimeout(playlistNext, 400); }
+    });
+    const srcNode = ctx.createMediaElementSource(el);
+    const g = ctx.createGain();
+    g.gain.value = 0.9;
+    srcNode.connect(g).connect(master);   // routed through master: volume/mute work
+    playlist.el = el;
+    playlist.gain = g;
+  }
+  playlist.on = true;
+  playlist.queue = [];
+  playlist.count = 0;
+  bridgeGenerative();   // instant audio NOW while the first track buffers
+  playlistNext();
+}
+
+// 0..1 live loudness from the analyser, for beat-reactive visuals in music mode
+function audioLevel() {
+  if (!audio.analyser) return 0;
+  audio.analyser.getByteFrequencyData(audio.levels);
+  let s = 0;
+  for (let i = 0; i < audio.levels.length; i++) s += audio.levels[i];
+  return Math.min(1, (s / audio.levels.length) / 110);
+}
+
+function initAudio() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const master = ctx.createGain();
+  master.gain.value = audio.volume;
+  const tone = ctx.createBiquadFilter();
+  tone.type = 'lowpass';
+  tone.frequency.value = 3400;
+  const comp = ctx.createDynamicsCompressor();
+  comp.threshold.value = -18;
+  comp.ratio.value = 3;
+  const analyser = ctx.createAnalyser();
+  analyser.fftSize = 256;
+  // duck node sits after master so the DJ can dip the music to talk over it
+  // without touching the user's volume (which lives on master.gain).
+  const duck = ctx.createGain();
+  duck.gain.value = 1;
+  master.connect(duck).connect(tone).connect(comp).connect(analyser).connect(ctx.destination);
+  audio.duck = duck;
+  // DJ voice bus: connects AFTER the duck, so when we dip the music to talk the
+  // voice itself stays full. Goes through the same comp/analyser → captured by OBS.
+  const djGain = ctx.createGain();
+  djGain.gain.value = 0.95;
+  djGain.connect(tone);                         // dry voice
+  // short reverb send so the voice sits INSIDE the mix, not pasted dry on top —
+  // synthetic impulse (exponentially-decaying noise) keeps it self-contained.
+  const verb = ctx.createConvolver();
+  verb.buffer = noiseBuffer(ctx, 1.0, d => {
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 2.6);
+  });
+  const verbHi = ctx.createBiquadFilter();      // tame the reverb's highs so it's warm, not splashy
+  verbHi.type = 'lowpass'; verbHi.frequency.value = 3200;
+  const verbGain = ctx.createGain();
+  verbGain.gain.value = 0.18;
+  djGain.connect(verb).connect(verbHi).connect(verbGain).connect(tone);
+  audio.djGain = djGain;
+  audio.analyser = analyser;
+  audio.levels = new Uint8Array(analyser.frequencyBinCount);
+
+  // melody echo bus
+  const melBus = ctx.createGain();
+  melBus.gain.value = 1;
+  const delay = ctx.createDelay(1);
+  delay.delayTime.value = BEAT * 0.75;
+  const fb = ctx.createGain();
+  fb.gain.value = 0.3;
+  const dampen = ctx.createBiquadFilter();
+  dampen.type = 'lowpass';
+  dampen.frequency.value = 1500;
+  melBus.connect(master);
+  melBus.connect(delay);
+  delay.connect(dampen).connect(fb).connect(delay);
+  fb.connect(master);
+
+  audio.ctx = ctx;
+  audio.master = master;
+  audio.melBus = melBus;
+  audio.tone = tone;          // master "DJ filter" — swept on each transition
+  startVinyl();
+}
+
+// DJ-style transition: a noise riser that swells into the next section's downbeat
+function riser(t, dur) {
+  const { ctx, master } = audio;
+  const src = ctx.createBufferSource();
+  src.buffer = noiseBuffer(ctx, dur + 0.1, d => {
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  });
+  const bp = ctx.createBiquadFilter();
+  bp.type = 'bandpass';
+  bp.Q.value = 1.2;
+  bp.frequency.setValueAtTime(500, t);
+  bp.frequency.exponentialRampToValueAtTime(6000, t + dur);
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(0.12, t + dur);
+  g.gain.linearRampToValueAtTime(0.0001, t + dur + 0.08);
+  src.connect(bp).connect(g).connect(master);
+  src.start(t); src.stop(t + dur + 0.1);
+}
+
+// crash + filter-open sweep at the moment a new section drops
+function dropTransition(t) {
+  const { ctx, master, tone } = audio;
+  // splash cymbal
+  const src = ctx.createBufferSource();
+  src.buffer = noiseBuffer(ctx, 1.2, d => {
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+  });
+  const hp = ctx.createBiquadFilter();
+  hp.type = 'highpass';
+  hp.frequency.value = 4000;
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(0.18, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 1.1);
+  src.connect(hp).connect(g).connect(master);
+  src.start(t); src.stop(t + 1.2);
+  // sweep the master filter closed->open, like a DJ bringing the track in.
+  // start deeper and open over ~2 bars so the new track audibly blooms.
+  tone.frequency.cancelScheduledValues(t);
+  tone.frequency.setValueAtTime(420, t);
+  tone.frequency.exponentialRampToValueAtTime(3400, t + BAR * 2);
+}
+
+function noiseBuffer(ctx, seconds, fill) {
+  const buf = ctx.createBuffer(1, ctx.sampleRate * seconds, ctx.sampleRate);
+  fill(buf.getChannelData(0));
+  return buf;
+}
+
+function startVinyl() {
+  const { ctx, master } = audio;
+  // crackle: sparse impulses over a faint noise floor, looped (kept subtle)
+  const buf = noiseBuffer(ctx, 3, data => {
+    for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * 0.005;
+    for (let p = 0; p < 32; p++) {
+      const at = Math.floor(Math.random() * data.length);
+      const amp = 0.08 + Math.random() * 0.22;
+      for (let j = 0; j < 40 && at + j < data.length; j++) {
+        data[at + j] += (Math.random() * 2 - 1) * amp * (1 - j / 40);
+      }
+    }
+  });
+  const src = ctx.createBufferSource();
+  src.buffer = buf;
+  src.loop = true;
+  const hp = ctx.createBiquadFilter();
+  hp.type = 'highpass';
+  hp.frequency.value = 900;
+  const g = ctx.createGain();
+  g.gain.value = 0.09;
+  src.connect(hp).connect(g).connect(master);
+  src.start();
+}
+
+// drum kits give each track a different rhythmic character
+const KITS = {
+  soft:   { kStart: 95,  kEnd: 40, kDecay: 0.26, snBp: 1500, snAmp: 0.24, hHp: 5500, hAmp: 0.05 },
+  punchy: { kStart: 140, kEnd: 45, kDecay: 0.18, snBp: 2300, snAmp: 0.34, hHp: 8000, hAmp: 0.09 },
+  tape:   { kStart: 110, kEnd: 42, kDecay: 0.22, snBp: 1800, snAmp: 0.28, hHp: 6500, hAmp: 0.06 },
+};
+
+function kick(t, kit) {
+  const { ctx, master } = audio;
+  const k = KITS[kit] || KITS.tape;
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.frequency.setValueAtTime(k.kStart, t);
+  o.frequency.exponentialRampToValueAtTime(k.kEnd, t + 0.12);
+  g.gain.setValueAtTime(0.85, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + k.kDecay);
+  o.connect(g).connect(master);
+  o.start(t); o.stop(t + k.kDecay + 0.03);
+}
+
+function snare(t, kit) {
+  const { ctx, master } = audio;
+  const k = KITS[kit] || KITS.tape;
+  const src = ctx.createBufferSource();
+  src.buffer = noiseBuffer(ctx, 0.2, d => {
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  });
+  const bp = ctx.createBiquadFilter();
+  bp.type = 'bandpass';
+  bp.frequency.value = k.snBp;
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(k.snAmp, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
+  src.connect(bp).connect(g).connect(master);
+  src.start(t); src.stop(t + 0.15);
+  const o = ctx.createOscillator();
+  const og = ctx.createGain();
+  o.frequency.value = 185;
+  og.gain.setValueAtTime(k.snAmp * 0.6, t);
+  og.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+  o.connect(og).connect(master);
+  o.start(t); o.stop(t + 0.1);
+}
+
+function hat(t, accent, kit) {
+  const { ctx, master } = audio;
+  const k = KITS[kit] || KITS.tape;
+  const src = ctx.createBufferSource();
+  src.buffer = noiseBuffer(ctx, 0.06, d => {
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  });
+  const hp = ctx.createBiquadFilter();
+  hp.type = 'highpass';
+  hp.frequency.value = k.hHp;
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(accent ? k.hAmp * 1.8 : k.hAmp, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.045);
+  src.connect(hp).connect(g).connect(master);
+  src.start(t); src.stop(t + 0.06);
+}
+
+function padChord(t, midis, cut, dur, padType) {
+  const { ctx, master } = audio;
+  dur = dur || BAR;
+  padType = padType || 'triangle';
+  // sawtooth pads are much brighter, so pull their level and cutoff down
+  const peak = padType === 'sawtooth' ? 0.05 : 0.085;
+  const lp = ctx.createBiquadFilter();
+  lp.type = 'lowpass';
+  lp.frequency.value = (padType === 'sawtooth' ? Math.min(cut || 1150, 1300) : (cut || 1150));
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.linearRampToValueAtTime(peak, t + Math.min(0.35, dur * 0.2));
+  g.gain.setValueAtTime(peak, t + dur - 0.6);
+  g.gain.linearRampToValueAtTime(0.0001, t + dur + 0.2);
+  lp.connect(g).connect(master);
+  for (const m of midis) {
+    for (const cents of [-4, 4]) {
+      const o = ctx.createOscillator();
+      o.type = padType;
+      o.frequency.value = midiHz(m);
+      o.detune.value = cents;
+      o.connect(lp);
+      o.start(t); o.stop(t + dur + 0.3);
+    }
+  }
+}
+
+function bassNote(t, midi, dur) {
+  const { ctx, master } = audio;
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.frequency.value = midiHz(midi);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.linearRampToValueAtTime(0.27, t + 0.03);
+  g.gain.setValueAtTime(0.2, t + dur * 0.6);
+  g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+  o.connect(g).connect(master);
+  o.start(t); o.stop(t + dur + 0.05);
+}
+
+function melNote(t, midi, type) {
+  const { ctx, melBus } = audio;
+  const g = ctx.createGain();
+  g.connect(melBus);
+  if (type === 'bell') {
+    // plucky bell: fundamental + octave, fast decay
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(0.09, t + 0.005);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+    for (const [mult, lvl] of [[1, 1], [2, 0.4]]) {
+      const o = ctx.createOscillator();
+      o.type = 'sine';
+      o.frequency.value = midiHz(midi) * mult;
+      const og = ctx.createGain();
+      og.gain.value = lvl;
+      o.connect(og).connect(g);
+      o.start(t); o.stop(t + 0.5);
+    }
+    return;
+  }
+  const o = ctx.createOscillator();
+  o.type = type || 'sine';
+  // square is buzzy/loud — tame it
+  const peak = type === 'square' ? 0.05 : 0.1;
+  o.frequency.value = midiHz(midi);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.linearRampToValueAtTime(peak, t + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+  o.connect(g);
+  o.start(t); o.stop(t + 0.55);
+}
+
+// time offset of an eighth-note step within its bar, at a given tempo & swing
+function stepOffsetSec(step, bpm, swing) {
+  const b = beatLen(bpm);
+  const beat = Math.floor(step / 2);
+  return beat * b + (step % 2 ? swing * b : 0);
+}
+
+// drums vary by groove AND kit, so each track feels like a different style
+function drums(step, t, sec) {
+  const f = sec.feel, kit = sec.kit;
+  if (f === 'ambient') {                       // no kit; rare soft tick
+    if (step === 4 && Math.random() < 0.25) hat(t, false, kit);
+    return;
+  }
+  if (f === 'four') {                          // four-on-the-floor, straight
+    if (step % 2 === 0) kick(t, kit);
+    if (step === 2 || step === 6) snare(t, kit);
+    if (step % 2 === 1) hat(t, true, kit);
+    else if (Math.random() > 0.4) hat(t, false, kit);
+  } else if (f === 'half') {                   // half-time: kick 1, snare 3
+    if (step === 0) kick(t, kit);
+    if (step === 4) snare(t, kit);
+    if (Math.random() > 0.45) hat(t, step % 2 === 0, kit);
+  } else {                                     // boom-bap (default)
+    if (step === 0) kick(t, kit);
+    if (step === 5) kick(t, kit);
+    if (step === 2 || step === 6) snare(t, kit);
+    if (Math.random() > 0.08) hat(t, step % 2 === 0, kit);
+  }
+}
+
+function bassPattern(step, t, sec, chord) {
+  const root = chord[0] - 12;
+  const b = beatLen(sec.bpm);
+  if (sec.bass === 'none') {
+    if (step === 0 && Math.random() < 0.6) bassNote(t, root, b * 2.5);
+  } else if (sec.bass === 'pluck') {
+    if (step === 0) bassNote(t, root, b * 0.55);
+    if (step === 4) bassNote(t, chord[2] - 12, b * 0.45);
+    if (step === 6 && Math.random() < 0.6) bassNote(t, root, b * 0.4);
+  } else {                                     // sub
+    if (step === 0) bassNote(t, root, b * 1.6);
+    if (step === 5 && sec.feel !== 'half' && Math.random() < 0.5) bassNote(t, root, b * 0.7);
+  }
+}
+
+function scheduleStep(barIndex, step, t) {
+  const barInSet = barIndex % 8;
+
+  // DJ build-up across the last bar before a change...
+  if (step === 0 && barInSet === 7 && barIndex > 0) riser(t, 4 * beatLen(audio.curBpm));
+  // ...then generate and drop a brand-new track on the 8th-bar downbeat.
+  if (step === 0 && barInSet === 0 && barIndex > 0) {
+    nextTrack();
+    dropTransition(t);
+  }
+  const sec = track;
+  const k = sec.key || 0;
+  const chord = sec.chords[barIndex % 4].map(n => n + k);
+
+  if (step === 0) padChord(t, chord, sec.padCut, barLen(sec), sec.padType);
+  drums(step, t, sec);
+  bassPattern(step, t, sec, chord);
+  if (step >= 2 && Math.random() < sec.density) {
+    let pick;
+    do { pick = sec.mel[Math.floor(Math.random() * sec.mel.length)]; } while (pick === lastMel);
+    lastMel = pick;
+    melNote(t, pick + sec.octave + k, sec.melType);
+  }
+  // arpeggiated lead: chord tones up the octave for movement, so it never drones
+  if (sec.feel !== 'ambient' && step % 2 === 0 && Math.random() < sec.density + 0.22) {
+    const arp = chord[(barIndex * 2 + step) % chord.length] + 12 + (sec.octave > 0 ? sec.octave : 0);
+    melNote(t, arp, sec.melType);
+  }
+}
+
+function schedulerTick() {
+  const ctx = audio.ctx;
+  while (audio.nextStepTime < ctx.currentTime + 0.15) {
+    scheduleStep(audio.barIndex, audio.stepInBar, audio.nextStepTime);
+    audio.stepInBar++;
+    if (audio.stepInBar >= 8) {
+      audio.stepInBar = 0;
+      audio.barStart += 4 * beatLen(audio.curBpm);          // bar just played
+      audio.barIndex++;
+      // beat-match: ease the tempo toward the new track instead of jumping,
+      // so a faster/slower track glides in like a DJ blend (~3-4 bars).
+      audio.curBpm += (track.bpm - audio.curBpm) * 0.34;
+    }
+    audio.nextStepTime = audio.barStart + stepOffsetSec(audio.stepInBar, audio.curBpm, track.swing);
+  }
+}
+
+// Start the live generative engine. joinMidSet=true drops in partway through a
+// random track (the "always live" feel); false starts a fresh section.
+function startGenerative(joinMidSet) {
+  do { track = makeTrack(false); } while (track.feel === 'ambient');
+  if (!playlist.on) currentSectionName = track.name;
+  audio.curBpm = track.bpm;
+  audio.startTime = audio.ctx.currentTime + 0.05;
+  audio.barStart = audio.startTime;
+  audio.barIndex = joinMidSet ? 2 + Math.floor(Math.random() * 5) : 0;
+  audio.stepInBar = 0;
+  audio.nextStepTime = audio.startTime;
+  if (audio.timer) clearInterval(audio.timer);
+  audio.timer = setInterval(schedulerTick, 30);
+}
+function stopGenerative() {
+  if (audio.timer) { clearInterval(audio.timer); audio.timer = null; }
+}
+
+// Real tracks currently stream from a high-latency source (archive.org), which
+// caused the buffering gaps. Until they're self-hosted on the fast CDN, the
+// station runs on the ZERO-LATENCY in-browser generative engine — instant,
+// infinite, multi-genre — with the DJ/value breaks layered on a timer. Flip to
+// true once tracks are served low-latency.
+let USE_REMOTE_TRACKS = true;
+function startGenBreaks() {
+  clearTimeout(audio.genBreakTimer);
+  const loop = () => {
+    if (!audio.playing) return;
+    stationBreak();                                  // value/idea card + DJ drop
+    audio.genBreakTimer = setTimeout(loop, 150000 + Math.random() * 90000);  // ~2.5–4 min
+  };
+  audio.genBreakTimer = setTimeout(loop, 28000);     // first drop ~28s in
+}
+
+function play() {
+  if (!audio.ctx) initAudio();
+  audio.ctx.resume();
+  if (!audio.playing) {
+    audio.playing = true;
+    if (playlist.tracks.length && USE_REMOTE_TRACKS) {
+      // hybrid mode: real tracks woven with live AI interludes
+      if (!playlist.el) startPlaylist();                 // first start
+      else if (playlist.mode === 'gen') startGenInterlude();  // was mid-interlude
+      else if (playlist.el.src) playlist.el.play().catch(() => {}); // resume same track
+      else playlistNext();
+    } else {
+      // generative-primary: zero-latency multi-genre engine + periodic DJ/value breaks
+      startGenerative(true);
+      startGenBreaks();
+    }
+    if (!dj.welcomed) {                    // greet the listener on first start
+      valuesUI.idx = 0; valuesUI.show();   // mission card: "Better drives, better lives"
+      dj.welcome();
+    }
+  }
+  ui.setPlaying(true);
+}
+
+function pause() {
+  if (audio.playing) {
+    audio.playing = false;
+    if (audio.genBreakTimer) { clearTimeout(audio.genBreakTimer); audio.genBreakTimer = null; }
+    if (playlist.genTimer) { clearTimeout(playlist.genTimer); playlist.genTimer = null; }
+    if (playlist.on) {
+      endBridge();                               // stop any generative bridge fill
+      if (playlist.mode === 'gen') stopGenerative();
+      else if (playlist.el) playlist.el.pause();
+    } else {
+      stopGenerative();
+    }
+    audio.ctx.suspend();
+    valuesUI.hide();
+    if (dj.el) { try { dj.el.pause(); } catch (e) {} }
+    if (dj.enabled) { try { speechSynthesis.cancel(); } catch (e) {} }
+    if (audio.duck) audio.duck.gain.value = 1;
+  }
+  ui.setPlaying(false);
+}
+
+// 0..4 "beat" phase for the visuals. In generative mode it's the real musical
+// clock; in music mode it's derived from live loudness so the scene still moves.
+function beatPhase() {
+  if (!audio.playing || !audio.ctx) return null;
+  if (playlist.on && playlist.mode !== 'gen') return audioLevel() * 4;
+  return (audio.ctx.currentTime - audio.barStart) / beatLen(audio.curBpm);
+}
+
+/* ----------------------- pixel scene ----------------------- */
+const cv = document.getElementById('scene');
+const cx = cv.getContext('2d');
+
+function px(x, y, w, h, c) { cx.fillStyle = c; cx.fillRect(x, y, w, h); }
+
+// 3x5 pixel glyphs for the neon sign and door decal
+const GLYPHS = {
+  C: ['111','100','100','100','111'],
+  A: ['111','101','111','101','101'],
+  R: ['110','101','110','101','101'],
+  S: ['111','100','111','001','111'],
+  F: ['111','100','110','100','100'],
+  M: ['10001','11011','10101','10001','10001'],
+  2: ['111','001','111','100','111'],
+  4: ['101','101','111','001','001'],
+  // lowercase x-height glyphs so the sign reads "Cars24", not all-caps
+  a: ['000','011','111','101','111'],
+  r: ['000','101','110','100','100'],
+  s: ['000','111','110','011','111'],
+};
+function glyph(ch, ox, oy, scale, color) {
+  const rows = GLYPHS[ch];
+  if (!rows) return 3;   // unknown char: skip drawing, advance a default width (never throw)
+  for (let r = 0; r < rows.length; r++)
+    for (let c = 0; c < rows[r].length; c++)
+      if (rows[r][c] === '1') px(ox + c * scale, oy + r * scale, scale, scale, color);
+  return rows[0].length;
+}
+function text(str, ox, oy, scale, color) {
+  for (const ch of str) {
+    const w = glyph(ch, ox, oy, scale, color);
+    ox += scale * (w + 1);
+  }
+}
+
+const STARS = [[15,15],[22,13],[30,17],[40,14],[18,22],[35,21],[44,19],[26,25],[14,28]];
+let shootingStart = 6;     // time the next shooting star fires
+let sparks = [];           // {x, y, until}
+
+// Channel logo "bug" — drawn on top of EVERY scene so Cars24 FM is always present.
+function drawNeon(t) {
+  const flicker = Math.sin(t * 11) + Math.sin(t * 6.3) > 1.86;
+  const border = flicker ? '#7a3c10' : '#ff7a1a';
+  px(116, 6, 66, 20, '#0d1322');
+  px(115, 5, 68, 1, border); px(115, 26, 68, 1, border);
+  px(115, 5, 1, 22, border); px(182, 5, 1, 22, border);
+  text('Cars24', 121, 9, 2, flicker ? '#1c3a78' : '#3d7dff');
+  text('FM', 152, 19, 1, flicker ? '#7a3c10' : '#ff7a1a');
+}
+
+// ===== Scene 1: the garage (the original) =====
+function sceneGarage(t, phase) {
+  const bob = phase !== null
+    ? Math.round(Math.abs(Math.sin(phase * Math.PI)))
+    : Math.round((Math.sin(t * 1.2) + 1) / 2);
+
+  // ---- wall & floor ----
+  px(0, 0, 192, 78, '#1a2233');
+  px(0, 0, 192, 30, '#161d2c');
+  px(0, 76, 192, 3, '#0e1420');
+  px(0, 79, 192, 29, '#262b36');
+  for (let i = 0; i < 192; i += 24) px(i, 79, 1, 29, '#1d212b');
+  px(0, 79, 192, 1, '#343b49');
+
+  // ---- window (night sky) ----
+  px(8, 8, 44, 34, '#0e1420');
+  px(11, 11, 38, 28, '#0a1128');
+  STARS.forEach(([sx, sy], i) => {
+    const tw = (Math.sin(t * 2 + i * 1.7) + 1) / 2;
+    if (tw > 0.25) px(sx, sy, 1, 1, tw > 0.75 ? '#ffffff' : '#9aa7c4');
+  });
+  // shooting star every ~14s
+  if (t > shootingStart && t < shootingStart + 0.6) {
+    const p = (t - shootingStart) / 0.6;
+    const sx = Math.round(14 + p * 30), sy = Math.round(13 + p * 9);
+    if (sx < 47 && sy < 30) { px(sx, sy, 2, 1, '#ffffff'); px(sx - 2, sy - 1, 2, 1, '#5b6a8c'); }
+  } else if (t > shootingStart + 0.6) {
+    shootingStart = t + 10 + Math.random() * 9;
+  }
+  // moon
+  px(39, 14, 5, 5, '#e8e4c9');
+  px(40, 13, 3, 7, '#e8e4c9');
+  px(38, 15, 7, 3, '#e8e4c9');
+  px(41, 16, 1, 1, '#cdc9ae');
+  // skyline
+  px(11, 32, 38, 7, '#070d1c');
+  [[12,5],[18,8],[25,4],[31,9],[38,6],[44,7]].forEach(([bx, bh]) => px(bx, 39 - bh, 5, bh, '#070d1c'));
+  [[13,35],[20,33],[33,32],[39,35],[45,34]].forEach(([wx, wy], i) => {
+    if (Math.sin(t * 0.7 + i * 2.4) > -0.6) px(wx, wy, 1, 1, '#f5c143');
+  });
+  px(28, 11, 2, 28, '#0e1420');
+  px(11, 24, 38, 2, '#0e1420');
+
+  // ---- pegboard ----
+  px(58, 12, 52, 32, '#222c44');
+  px(58, 12, 52, 1, '#2e3a58');
+  for (const tx of [64, 72, 80]) {
+    px(tx, 17, 2, 12, '#9aa5b1');
+    px(tx - 1, 16, 4, 2, '#9aa5b1');
+  }
+  px(90, 17, 2, 13, '#8a623f');
+  px(87, 16, 8, 3, '#9aa5b1');
+  px(98, 20, 9, 9, '#11151c');
+  px(101, 23, 3, 3, '#222c44');
+  px(60, 36, 46, 2, '#31405f');
+  [[63,'#ff7a1a'],[69,'#2b6cf6'],[75,'#9aa5b1']].forEach(([cxx, cc]) => px(cxx, 31, 4, 5, cc));
+
+  // ---- car ----
+  px(76, 84, 96, 3, '#1b1f29');                 // shadow
+  px(80, 62, 88, 14, '#2b6cf6');                // lower body
+  px(98, 50, 52, 12, '#2b6cf6');                // cabin
+  px(96, 50, 56, 2, '#3d7dff');                 // roof highlight
+  px(102, 53, 18, 8, '#bfe3ff');                // windows
+  px(124, 53, 20, 8, '#bfe3ff');
+  px(120, 53, 4, 11, '#2b6cf6');                // b-pillar
+  px(80, 56, 18, 6, '#1c4cc0');                 // engine bay
+  px(76, 46, 20, 3, '#2b6cf6');                 // raised hood
+  px(76, 49, 2, 8, '#1c4cc0');                  // hood prop
+  px(84, 58, 10, 5, '#39404d');                 // engine block
+  px(80, 72, 88, 4, '#1c4cc0');                 // lower shading
+  px(166, 63, 2, 4, '#ff5b5b');                 // tail light
+  px(80, 63, 2, 3, '#ffe9a8');                  // headlight
+  px(122, 62, 1, 12, '#1c4cc0');                // door line
+  px(126, 65, 4, 2, '#dce6f5');                 // handle
+  glyph('2', 132, 66, 1, '#ff7a1a');            // door decal
+  glyph('4', 136, 66, 1, '#ffffff');
+  for (const wx of [96, 148]) {
+    px(wx - 7, 70, 14, 14, '#11151c');
+    px(wx - 3, 74, 6, 6, '#c8d0da');
+    px(wx - 1, 76, 2, 2, '#5b6573');
+  }
+  px(89, 70, 14, 2, '#1c4cc0');
+  px(141, 70, 14, 2, '#1c4cc0');
+
+  // sparks from the engine bay while the music plays
+  if (phase !== null && Math.random() < 0.02) {
+    sparks.push({ x: 86 + Math.random() * 6, y: 55 + Math.random() * 3, until: t + 0.25 });
+  }
+  sparks = sparks.filter(s => s.until > t);
+  for (const s of sparks) px(Math.round(s.x), Math.round(s.y - (s.until - t) * 8), 1, 1, Math.random() > 0.5 ? '#ffe9a8' : '#ff7a1a');
+
+  // ---- cat on the roof ----
+  px(128, 46, 12, 4, '#7d8696');
+  px(138, 44, 4, 4, '#7d8696');
+  px(138, 43, 1, 1, '#7d8696');
+  px(141, 43, 1, 1, '#7d8696');
+  if (Math.sin(t * 0.8) > 0.6) px(124, 45, 2, 4, '#7d8696');   // tail flick
+  else px(124, 47, 4, 2, '#7d8696');
+
+  // ---- mechanic ----
+  px(66, 74, 3, 10, '#2a3850');                 // legs
+  px(71, 74, 3, 10, '#2a3850');
+  px(65, 83, 4, 2, '#11151c');                  // shoes
+  px(70, 83, 4, 2, '#11151c');
+  px(65, 62, 10, 12, '#3a4a63');                // torso
+  px(73, 60, 5, 8, '#3a4a63');                  // lean
+  px(77, 58 + bob, 8, 3, '#3a4a63');            // arm
+  px(84, 56 + bob, 3, 4, '#e8b08a');            // hand
+  px(86, 54 + bob, 2, 5, '#9aa5b1');            // wrench
+  px(68, 53 + bob, 8, 8, '#e8b08a');            // head
+  px(67, 51 + bob, 10, 4, '#ff7a1a');           // cap
+  px(67, 55 + bob, 2, 2, '#e8b08a');
+  px(73, 56 + bob, 1, 1, '#11151c');            // eye
+
+  // ---- workbench ----
+  px(6, 56, 46, 4, '#8a623f');
+  px(6, 60, 46, 2, '#6b4a2f');
+  px(8, 62, 3, 22, '#4f3722');
+  px(47, 62, 3, 22, '#4f3722');
+  // radio with EQ bars
+  px(12, 46, 14, 10, '#39404d');
+  px(13, 44, 1, 3, '#9aa5b1');
+  px(14, 48, 6, 5, '#0d1322');
+  for (let b = 0; b < 3; b++) {
+    const h = phase !== null
+      ? 1 + Math.round(((Math.sin(phase * Math.PI * 2 + b * 2) + 1) / 2) * 3)
+      : 1;
+    px(15 + b * 2, 53 - h, 1, h, b === 1 ? '#ff7a1a' : '#2b6cf6');
+  }
+  px(22, 48, 2, 2, '#ff7a1a');
+  px(22, 52, 2, 2, '#2b6cf6');
+  // coffee with rising steam
+  px(32, 50, 6, 6, '#e8ecf5');
+  px(38, 51, 2, 3, '#e8ecf5');
+  px(33, 49, 4, 1, '#6b4a2f');
+  const sy = 48 - ((t * 3) % 8);
+  px(34 + Math.round(Math.sin(t * 3)), Math.round(sy), 1, 2, '#aab4c4');
+  px(36 - Math.round(Math.sin(t * 2.4)), Math.round(sy - 3), 1, 2, '#79839a');
+  px(42, 54, 7, 2, '#dce6f5');                  // papers
+
+  // ---- toolbox ----
+  px(172, 66, 16, 18, '#c0392b');
+  px(172, 66, 16, 2, '#e74c3c');
+  px(172, 72, 16, 1, '#7c241a');
+  px(172, 78, 16, 1, '#7c241a');
+  px(178, 68, 4, 1, '#dce6f5');
+  // oil stain
+  px(60, 92, 14, 4, '#1d212b');
+  px(64, 94, 14, 3, '#1d212b');
+}
+
+// ===== Scene 2: night highway (Cars24 car driving) =====
+function sceneHighway(t, phase) {
+  px(0, 0, 192, 108, '#0a1024');
+  px(0, 0, 192, 60, '#0c1430');
+  px(0, 52, 192, 8, '#243a6b');                 // horizon glow
+  px(0, 58, 192, 4, '#3a5a9a');
+  STARS.forEach(([sx, sy], i) => { if (sy < 46) { const tw = (Math.sin(t * 2 + i * 1.7) + 1) / 2; if (tw > 0.3) px(sx, sy, 1, 1, tw > 0.75 ? '#fff' : '#9aa7c4'); } });
+  px(150, 12, 6, 6, '#e8e4c9'); px(151, 11, 4, 8, '#e8e4c9');   // moon
+  // distant skyline scrolling slowly
+  const off = Math.floor((t * 6) % 24);
+  for (let bx = -24 - off; bx < 192; bx += 24) {
+    [[4, 10], [10, 7], [16, 12], [20, 8]].forEach(([dx, bh], k) => {
+      px(bx + dx, 60 - bh, 3, bh, '#0e1830');
+      if ((bx + dx + k) % 2 === 0) px(bx + dx + 1, 60 - bh + 1, 1, 1, '#f5c143');
+    });
+  }
+  // road
+  px(0, 62, 192, 46, '#15171f'); px(0, 62, 192, 2, '#2a2f3c');
+  px(0, 62, 4, 46, '#1c2030'); px(188, 62, 4, 46, '#1c2030');
+  // dashed center line scrolling (faster on the beat)
+  const spd = phase !== null ? 26 : 12;
+  const dOff = (t * spd) % 18;
+  for (let y = 64; y < 108; y += 18) {
+    const yy = Math.round(y + dOff);
+    const w = 2 + Math.round((yy - 62) / 46 * 4);
+    if (yy < 108) px(96 - Math.floor(w / 2), yy, w, 6, '#c9b66a');
+  }
+  // Cars24 car from behind
+  const bob = phase !== null ? Math.round(Math.abs(Math.sin(phase * Math.PI))) : 0;
+  const cy = 70 + bob;
+  px(74, cy + 22, 44, 3, '#0c0f16');            // shadow
+  px(78, cy, 36, 18, '#2b6cf6');                // body
+  px(82, cy - 8, 28, 9, '#2b6cf6');             // cabin
+  px(84, cy - 6, 24, 6, '#0c1428');             // rear window
+  px(78, cy, 36, 2, '#3d7dff');                 // roof edge
+  px(80, cy + 14, 32, 4, '#1c4cc0');            // bumper
+  px(80, cy + 5, 3, 4, '#ff5b5b'); px(109, cy + 5, 3, 4, '#ff5b5b'); // tail lights
+  if (phase !== null && (Math.sin(phase * Math.PI * 2) + 1) / 2 > 0.5) { px(79, cy + 5, 1, 4, '#ff8b8b'); px(112, cy + 5, 1, 4, '#ff8b8b'); }
+  glyph('2', 91, cy + 8, 1, '#ff7a1a'); glyph('4', 95, cy + 8, 1, '#fff');
+}
+
+// ===== Scene 3: rainy rooftop desk =====
+function sceneRooftop(t, phase) {
+  px(0, 0, 192, 108, '#141a2a');
+  px(0, 0, 192, 70, '#10151f');
+  px(0, 90, 192, 18, '#1b2130'); px(0, 88, 192, 2, '#2a3346'); // desk
+  px(20, 10, 150, 74, '#0a1024');               // window
+  px(20, 10, 150, 2, '#2a3346'); px(20, 82, 150, 2, '#2a3346');
+  px(94, 10, 2, 74, '#2a3346');
+  const cols = ['#f5c143', '#ff7a1a', '#6fb1ff', '#ffd9a0'];
+  for (let i = 0; i < 40; i++) {
+    const bx = 24 + ((i * 37) % 142), by = 16 + ((i * 53) % 60);
+    const tw = (Math.sin(t * 1.5 + i) + 1) / 2;
+    if (tw > 0.4) px(bx, by, tw > 0.8 ? 2 : 1, tw > 0.8 ? 2 : 1, cols[i % 4]);
+  }
+  for (let i = 0; i < 26; i++) {                // rain
+    const rx = 22 + ((i * 61) % 146);
+    const ry = (t * 60 + i * 40) % 74;
+    px(rx, 12 + Math.round(ry), 1, 3, '#3a567f');
+  }
+  px(10, 78, 8, 12, '#5a3b28');                 // plant pot
+  px(9, 72, 3, 8, '#2f6b3a'); px(13, 70, 3, 10, '#2f6b3a'); px(16, 73, 3, 7, '#2f6b3a');
+  px(120, 74, 40, 16, '#2a3346');               // laptop base
+  px(124, 58, 34, 18, '#1a2030'); px(126, 60, 30, 14, '#0d1322'); // screen
+  for (let b = 0; b < 8; b++) {                 // screen EQ
+    const h = phase !== null ? 1 + Math.round(((Math.sin(phase * Math.PI * 2 + b * 0.8) + 1) / 2) * 10) : 2;
+    px(128 + b * 3, 72 - h, 2, h, b % 3 === 0 ? '#ff7a1a' : '#2b6cf6');
+  }
+  px(96, 80, 8, 8, '#c0392b'); px(104, 82, 2, 3, '#c0392b'); // mug
+  const sy = 78 - ((t * 3) % 8);
+  px(98 + Math.round(Math.sin(t * 3)), Math.round(sy), 1, 2, '#aab4c4');
+  px(100 - Math.round(Math.sin(t * 2.4)), Math.round(sy - 3), 1, 2, '#79839a');
+  px(168, 64, 10, 8, '#ffd9a0'); px(170, 70, 6, 20, '#3a4763'); // lamp
+  px(164, 60, 18, 16, 'rgba(255,200,120,0.07)');               // lamp glow
+}
+
+// ===== Scene 4: neon gas station at night =====
+function sceneGas(t, phase) {
+  px(0, 0, 192, 108, '#0a1024');
+  px(0, 0, 192, 64, '#0c1430');
+  STARS.forEach(([sx, sy], i) => { if (sy < 46) { const tw = (Math.sin(t * 2 + i * 1.7) + 1) / 2; if (tw > 0.3) px(sx, sy, 1, 1, tw > 0.7 ? '#fff' : '#9aa7c4'); } });
+  px(150, 14, 6, 6, '#e8e4c9'); px(151, 13, 4, 8, '#e8e4c9');
+  px(0, 80, 192, 28, '#181c26'); px(0, 80, 192, 2, '#262b36'); // ground
+  const fl = Math.sin(t * 9) + Math.sin(t * 5.1) > 1.7;
+  px(20, 30, 120, 8, '#20283a');                // canopy
+  px(18, 28, 124, 3, fl ? '#7a3c10' : '#ff7a1a');
+  px(28, 38, 4, 42, '#2a3346'); px(128, 38, 4, 42, '#2a3346');  // pillars
+  px(150, 34, 30, 18, '#11151c');               // sign (in-font glyphs only)
+  text('Cars24', 152, 38, 1, fl ? '#1c3a78' : '#3d7dff');
+  px(153, 46, 24, 1, fl ? '#7a3c10' : '#ff7a1a');
+  [44, 60].forEach(pxx => {                      // pumps
+    px(pxx, 56, 8, 22, '#39404d'); px(pxx + 1, 58, 6, 6, '#0d1322');
+    for (let b = 0; b < 3; b++) { const h = phase !== null ? 1 + Math.round(((Math.sin(phase * Math.PI * 2 + b) + 1) / 2) * 3) : 1; px(pxx + 2 + b * 2, 63 - h, 1, h, b === 1 ? '#ff7a1a' : '#2b6cf6'); }
+    px(pxx + 7, 60, 2, 8, '#1c2030');
+  });
+  px(86, 78, 60, 3, '#0c0f16');                  // parked Cars24 car
+  px(90, 64, 52, 12, '#2b6cf6'); px(102, 56, 30, 9, '#2b6cf6'); px(100, 56, 34, 2, '#3d7dff');
+  px(104, 58, 12, 6, '#bfe3ff'); px(120, 58, 10, 6, '#bfe3ff');
+  px(94, 72, 8, 2, '#1c4cc0');
+  glyph('2', 114, 66, 1, '#ff7a1a'); glyph('4', 118, 66, 1, '#fff');
+  for (const wx of [100, 134]) { px(wx - 6, 72, 12, 10, '#11151c'); px(wx - 2, 75, 4, 4, '#c8d0da'); }
+  px(140, 67, 2, 3, '#ff5b5b');
+  px(24, 78, 112, 2, 'rgba(255,140,40,0.10)');   // ground glow
+}
+
+// ===== procedural scene rotation =====
+// 4 base templates, but each cycle gets a fresh time-of-day wash + weather, so
+// the artwork is effectively never the same twice. 4 scenes × 7 times × 5
+// weathers × continuous animation = thousands of distinct looks.
+const SCENES = [sceneGarage, sceneHighway, sceneRooftop, sceneGas];
+const HOURS = [
+  { wash: null },                              // midnight (neutral)
+  { wash: 'rgba(122,62,140,0.16)' },           // dusk
+  { wash: 'rgba(255,150,80,0.12)' },           // dawn
+  { wash: 'rgba(40,52,74,0.24)' },             // storm
+  { wash: 'rgba(255,180,90,0.10)' },           // amber
+  { wash: 'rgba(60,120,220,0.12)' },           // cool
+  { wash: 'rgba(20,140,120,0.10)' },           // teal
+];
+const WEATHERS = ['clear', 'clear', 'rain', 'snow', 'fog'];
+// Real local weather (website only): IP geolocation (no permission prompt) +
+// Open-Meteo, so the scene reflects the visitor's actual sky. Falls back to
+// random when offline/blocked — and on the single OBS/YT broadcast there's no
+// per-viewer location, so it just uses the random procedural weather there.
+let realLook = null;
+async function detectLocalWeather() {
+  try {
+    const geo = await (await fetch('https://ipapi.co/json/')).json();
+    if (!geo || geo.latitude == null) return;
+    const w = await (await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${geo.latitude}&longitude=${geo.longitude}&current=weather_code,is_day`)).json();
+    const c = (w && w.current) ? w.current.weather_code : 0;
+    const day = (w && w.current) ? w.current.is_day : 1;
+    let weather = 'clear';
+    if (c === 45 || c === 48) weather = 'fog';
+    else if ((c >= 71 && c <= 77) || c === 85 || c === 86) weather = 'snow';
+    else if ((c >= 51 && c <= 67) || (c >= 80 && c <= 82) || c >= 95) weather = 'rain';
+    const hr = new Date().getHours();
+    let hour;
+    if (hr >= 5 && hr < 8) hour = HOURS[2];                 // dawn
+    else if (hr >= 8 && hr < 17) hour = day ? HOURS[4] : HOURS[5];  // amber / cool
+    else if (hr >= 17 && hr < 20) hour = HOURS[1];          // dusk
+    else hour = HOURS[0];                                   // midnight
+    realLook = { weather, hour };
+  } catch (e) { /* offline / blocked / OBS -> random procedural weather */ }
+}
+detectLocalWeather();
+function makeLook() {
+  // mostly mirror the visitor's real sky, but vary occasionally for interest
+  if (realLook && Math.random() < 0.8) return { hour: realLook.hour, weather: realLook.weather, seed: Math.floor(Math.random() * 1000) };
+  return { hour: pick(HOURS), weather: pick(WEATHERS), seed: Math.floor(Math.random() * 1000) };
+}
+let sceneLook = makeLook();
+function applyLook(t) {
+  const L = sceneLook;
+  if (L.hour.wash) px(0, 0, 192, 108, L.hour.wash);
+  if (L.weather === 'rain') {
+    for (let i = 0; i < 44; i++) { const y = (t * 130 + i * 27) % 124 - 6; const x = (i * 53 + L.seed + y * 0.4) % 192; px(Math.round((x + 192) % 192), Math.round(y), 1, 4, 'rgba(150,180,230,0.33)'); }
+  } else if (L.weather === 'snow') {
+    for (let i = 0; i < 38; i++) { const x = (i * 47 + L.seed + Math.sin(t * 0.6 + i) * 9); const y = (t * 20 + i * 31) % 116; px(Math.round((x + 384) % 192), Math.round(y), 1, 1, 'rgba(232,240,255,0.8)'); }
+  } else if (L.weather === 'fog') {
+    for (let b = 0; b < 4; b++) px(0, Math.round(18 + b * 22 + Math.sin(t * 0.3 + b) * 3), 192, 9, 'rgba(180,190,210,0.05)');
+  }
+}
+let sceneCur = 0, sceneNext = 0, sceneFx = { active: false };
+function drawScene(t) {
+  const phase = beatPhase();
+  if (!sceneNext) sceneNext = t + 70;
+  if (!sceneFx.active && t > sceneNext) {
+    let to = Math.floor(Math.random() * SCENES.length);
+    if (to === sceneCur) to = (to + 1) % SCENES.length;
+    sceneLook = makeLook();                      // fresh palette + weather each cycle
+    sceneFx = { active: true, start: t, dur: 1.4, from: sceneCur, to: to };
+  }
+  if (sceneFx.active) {
+    const p = (t - sceneFx.start) / sceneFx.dur;
+    (p < 0.5 ? SCENES[sceneFx.from] : SCENES[sceneFx.to])(t, phase);
+    applyLook(t);
+    px(0, 0, 192, 108, 'rgba(8,11,18,' + Math.min(1, p < 0.5 ? p * 2 : (1 - p) * 2).toFixed(3) + ')');
+    if (p >= 1) { sceneCur = sceneFx.to; sceneFx = { active: false }; sceneNext = t + 70 + Math.random() * 50; }
+  } else {
+    SCENES[sceneCur](t, phase);
+    applyLook(t);
+  }
+  drawNeon(t);                                   // channel logo persists across scenes
+}
+
+const t0 = performance.now();
+function loop() {
+  drawScene((performance.now() - t0) / 1000);
+  requestAnimationFrame(loop);
+}
+loop();
+
+/* ----------------------- UI wiring ----------------------- */
+const ui = {
+  frame: document.getElementById('frame'),
+  overlay: document.getElementById('playOverlay'),
+  btnPlay: document.getElementById('btnPlay'),
+  icoPlay: document.getElementById('icoPlay'),
+  icoPause: document.getElementById('icoPause'),
+  btnMute: document.getElementById('btnMute'),
+  icoVol: document.getElementById('icoVol'),
+  icoMuted: document.getElementById('icoMuted'),
+  vol: document.getElementById('vol'),
+  setPlaying(on) {
+    this.overlay.classList.toggle('hidden', on);
+    this.frame.classList.toggle('playing', on);
+    this.icoPlay.style.display = on ? 'none' : '';
+    this.icoPause.style.display = on ? '' : 'none';
+  },
+};
+
+function togglePlay() { audio.playing ? pause() : play(); }
+
+ui.overlay.addEventListener('click', play);
+ui.btnPlay.addEventListener('click', togglePlay);
+
+// First tap/click ANYWHERE on the page starts the channel — so a shared link
+// plays with a single tap, no hunting for the button. (Browsers block audio
+// autoplay until a user gesture, so a true zero-tap start isn't possible; this
+// is the closest we can get.) Taps on the transport controls keep their normal
+// behaviour. The OBS/stream path uses ?autoplay=1 instead.
+(function () {
+  const start = (e) => {
+    if (e.target.closest && e.target.closest('.controls')) return;  // let buttons act
+    if (!audio.playing) play();
+    window.removeEventListener('pointerdown', start, true);
+  };
+  window.addEventListener('pointerdown', start, true);
+})();
+
+function applyVolume() {
+  if (audio.master) audio.master.gain.value = audio.muted ? 0 : audio.volume;
+  ui.icoVol.style.display = audio.muted ? 'none' : '';
+  ui.icoMuted.style.display = audio.muted ? '' : 'none';
+}
+ui.vol.addEventListener('input', () => {
+  audio.volume = ui.vol.value / 100;
+  audio.muted = false;
+  applyVolume();
+});
+ui.btnMute.addEventListener('click', () => { audio.muted = !audio.muted; applyVolume(); });
+
+document.getElementById('btnFull').addEventListener('click', () => {
+  document.fullscreenElement ? document.exitFullscreen() : ui.frame.requestFullscreen();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
+  if (e.key === 'm') { audio.muted = !audio.muted; applyVolume(); }
+  if (e.key === 'f') { document.fullscreenElement ? document.exitFullscreen() : ui.frame.requestFullscreen(); }
+});
+
+// "now playing" track name — updates as the DJ moves between sections
+const nowPlayingEl = document.getElementById('nowPlaying');
+setInterval(() => {
+  nowPlayingEl.textContent = audio.playing
+    ? '♫ now playing — ' + currentSectionName
+    : (playlist.tracks.length
+        ? '♫ ' + playlist.tracks.length + ' tracks loaded — press play'
+        : '♫ press play to start the set');
+}, 500);
+
+// drifting viewer count (homage to the original's cosy 4 viewers)
+const viewersEls = [document.getElementById('viewers'), document.getElementById('viewers2')];
+function driftViewers() {
+  const n = 3 + Math.floor(Math.random() * 6);
+  viewersEls.forEach(el => el.textContent = n);
+  setTimeout(driftViewers, 5000 + Math.random() * 5000);
+}
+driftViewers();
+
+// Load the optional real-music playlist (music/playlist.json). If present with
+// entries, pressing play uses those real tracks; otherwise the generative
+// engine plays. The "now playing" readout shows which mode is active.
+const playlistReady = Promise.all([loadPlaylist(), loadDJ()]);
+
+// likes
+let liked = false;
+const btnSub = document.getElementById('btnSub');
+btnSub.addEventListener('click', () => {
+  btnSub.classList.toggle('subbed');
+  btnSub.textContent = btnSub.classList.contains('subbed') ? 'Subscribed ✓' : 'Subscribe';
+});
+document.getElementById('likes').parentElement.addEventListener('click', e => {
+  liked = !liked;
+  document.getElementById('likes').textContent = liked ? '216' : '215';
+});
+
+// Stream mode: open with ?autoplay=1 to start the channel with no click,
+// for OBS browser sources / kiosk displays / 24-7 YouTube streaming.
+if (/(?:[?&#])autoplay=1(?:&|$)/.test(location.search + location.hash)) {
+  // wait for the playlist to load first, else we'd start in generative-only mode
+  const kick = () => { playlistReady.finally(() => { try { play(); } catch (e) {} }); };
+  window.addEventListener('load', kick);
+  setTimeout(kick, 800);   // some embedded browsers need a beat
+}
+
+</script>
+</body>
+</html>
