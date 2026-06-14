@@ -289,7 +289,7 @@
       Lee Rosevere, Broke For Free, Jahzzar, Kai Engel and others — via the
       <a href="https://archive.org" target="_blank" rel="noopener">Internet Archive</a>.
       <br>DJ voice generated with ElevenLabs.
-      <br><span style="opacity:.6">build 2026-06-14b self-hosted low-latency library (129 tracks) + multi-genre, lo-fi-curated</span>
+      <br><span style="opacity:.6">build 2026-06-14c self-hosted low-latency library (129 tracks) + multi-genre, lo-fi-curated, dayparted</span>
     </div>
   </div>
 </div>
@@ -355,8 +355,52 @@ const GENRES = [
 ];
 // weighted toward beat-driven, melodic genres so the engine never drones (ambient is rare)
 const GENRE_POOL = [0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 5];
+
+// ---- dayparting: shift the station's mood by local time of day ----
+// Lo-fi stays the spine in every band; only the weighting moves. Bands mirror
+// the visual scene's hour logic so audio and visuals drift together:
+//   night → calm (ambient/lo-fi) · morning → mellow, warming · day → bright
+//   build energy · evening → upbeat drive.
+function daypart(h = new Date().getHours()) {
+  if (h >= 22 || h < 6) return 'night';
+  if (h < 10) return 'morning';
+  if (h < 18) return 'day';
+  return 'evening';
+}
+// Weighted GENRES indices per band (0 lo-fi,1 jazzhop,2 boom-bap,3 synthwave,4 house,5 ambient)
+const DAY_GENRE_POOLS = {
+  night:   [5, 5, 0, 0, 0, 1, 1],     // ambient + lo-fi, low and slow
+  morning: [0, 0, 0, 1, 1, 5, 2],     // mellow lo-fi/jazzhop, warming up
+  day:     [0, 1, 1, 2, 2, 2, 3],     // brighter, beat-driven build energy
+  evening: [2, 2, 3, 3, 4, 0, 1],     // upbeat drive: boom-bap/synthwave/house
+};
+function dayGenrePool() { return DAY_GENRE_POOLS[daypart()] || GENRE_POOL; }
+
+// Rough energy (0 calm … 1 upbeat) for a real track, by artist/album keywords.
+// Heuristic, not exact — just enough to bias ordering toward the time of day.
+function trackEnergy(file) {
+  const s = file.toLowerCase();
+  if (/roller disco|robot dance|discolounge|acidjazz|dd groove|beach party|cipher|off to osaka|dances and dames|poupis|ultra person|champ de|invisible|superconduct/.test(s)) return 0.85;
+  if (/zabriskie|kai engel|music for ?podcasts|lofi ambient|minimal ambient|chill for real|reliquary|candlelight|gymnopedie|brandenburg|narcissus|plain loafer|as i figure|wallpaper|hypnothis|gurdonark|anthropomystery/.test(s)) return 0.15;
+  return 0.5;   // jahzzar, broke for free, lee rosevere misc, komiku, loyalty lo-fi → mellow mid
+}
+const DAY_ENERGY = { night: 0.15, morning: 0.4, day: 0.7, evening: 0.8 };
+// Weighted shuffle (Efraimidis–Spirakis): bias order toward the band's energy
+// without excluding anything, so the whole catalogue still rotates.
+function daypartShuffle(tracks) {
+  const target = DAY_ENERGY[daypart()] ?? 0.5;
+  return tracks
+    .map(t => {
+      const fit = 1 - Math.abs(trackEnergy(t) - target);   // 0..1, higher = better fit
+      const w = 0.2 + fit * fit;                           // squared for contrast; floor keeps variety
+      return { t, k: Math.pow(Math.random(), 1 / w) };
+    })
+    .sort((a, b) => b.k - a.k)
+    .map(o => o.t);
+}
+
 function makeTrack(opener) {
-  const G = opener ? GENRES[2] : GENRES[pick(GENRE_POOL)];   // opener = punchy boom-bap
+  const G = opener ? GENRES[2] : GENRES[pick(dayGenrePool())];   // opener = punchy boom-bap
   const rng = r => r[0] + Math.random() * (r[1] - r[0]);
   const feel = G.feel;
   return {
@@ -394,7 +438,7 @@ function nextTrack() {
    missing or empty, the generative engine plays — so the page always works. */
 const playlist = { tracks: [], queue: [], el: null, gain: null, idx: 0, on: false,
   // hybrid rotation: real tracks interleaved with on-the-fly AI-generated interludes
-  mode: 'track', count: 0, genEvery: 4, genTimer: null };
+  mode: 'track', count: 0, genEvery: 4, genTimer: null, band: null };
 
 /* ---- Cars24 values v3 + vision: shown on screen AND read aloud DJ-style ----
    `line` is the on-screen text; `say` holds spoken paraphrases. The DJ wraps a
@@ -716,7 +760,9 @@ function playlistNext() {
     return;
   }
   playlist.mode = 'track';
-  if (!playlist.queue.length) playlist.queue = shuffle(playlist.tracks.slice());
+  const band = daypart();
+  if (band !== playlist.band) { playlist.band = band; playlist.queue = []; }   // re-bias when the clock turns
+  if (!playlist.queue.length) playlist.queue = daypartShuffle(playlist.tracks.slice());
   const entry = playlist.queue.shift();
   currentSectionName = prettifyName(entry);
   // absolute URLs (archive.org streams) are used as-is; bare names live in music/
