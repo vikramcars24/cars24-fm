@@ -1,0 +1,13 @@
+{
+  "build": "2026-06-14a",
+  "tracks": 150,
+  "useRemoteTracks": true,
+  "hosting": "github-pages-relative",
+  "trackResolution": "bare filename -> music/<encoded>; absolute http(s) URLs used as-is",
+  "djVoice": "elevenlabs-prerendered (music/dj/, manifest.json)",
+  "parked": [
+    "elevenlabs-music: generative music API, pending enterprise terms"
+  ],
+  "canonicalVersionLocation": "index.html build label (search: 'build 2026-')",
+  "note": "Source of truth is git, not any session report. Keep this file in sync with the index.html build label on every change."
+}
