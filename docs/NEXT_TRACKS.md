@@ -30,6 +30,12 @@
 - **Self-host only.** Download the mp3 into `music/`, then list the *bare filename* in
   `music/playlist.json`. Do not add `http(s)` URLs (that reintroduces latency).
 - **No duplicates.** Only add files whose names aren't already in `playlist.json`.
+- **Audio quality — HARD RULE: ≥192 kbps, prefer ≥256 kbps / VBR V0.** Each archive.org
+  item often has several encodings of the same song (e.g. a 128 kbps "preview" MP3 and a
+  higher-quality one, sometimes a FLAC master). Read the per-file `bitrate` from the item
+  metadata and pick the **highest-bitrate MP3**. **Skip any track whose best available MP3
+  is under 192 kbps** rather than adding a thin-sounding file. If only FLAC exists and no
+  acceptable MP3, either transcode FLAC → 256k MP3 with `ffmpeg` or skip the track.
 
 ## The fetch procedure (per source item)
 
@@ -38,9 +44,20 @@ Use it instead of guessing filenames:
 
 ```bash
 ITEM=BrokeForFreeLayers           # example
-# 1. list mp3s + license for this item
+# 1. list mp3s WITH bitrate + license, sorted best-first (enforce the >=192 kbps rule)
 curl -s "https://archive.org/metadata/$ITEM" \
- | python3 -c "import sys,json; d=json.load(sys.stdin); print('LICENSE:', d.get('metadata',{}).get('licenseurl','(none listed)')); [print(f['name']) for f in d['files'] if f['name'].lower().endswith('.mp3')]"
+ | python3 -c "
+import sys,json
+d=json.load(sys.stdin)
+print('LICENSE:', d.get('metadata',{}).get('licenseurl','(none listed)'))
+mp3=[f for f in d['files'] if f.get('name','').lower().endswith('.mp3')]
+def kbps(f):
+    try: return int(float(f.get('bitrate',0)))
+    except: return 0
+for f in sorted(mp3, key=kbps, reverse=True):
+    b=kbps(f); flag='OK' if b>=192 else 'SKIP(<192)'
+    print(f\"{b:>4} kbps  {flag:>10}  {f['name']}\")
+"
 
 # 2. download one chosen file (URL-encode spaces with %20 or let curl -G handle it)
 #    pattern: https://archive.org/download/<ITEM>/<FILE>
@@ -101,5 +118,6 @@ Pull tracks **not already** in `playlist.json` from these. Expected licenses not
 
 ## Done when
 
-- ~15–25 new self-hosted tracks added, integrity check clean, build label + `STATUS.json`
-  bumped with the new count, footnote attribution correct, pushed, PR opened.
+- ~15–25 new self-hosted tracks added (**every one ≥192 kbps**), integrity check clean,
+  build label + `STATUS.json` bumped with the new count, footnote attribution correct,
+  pushed, PR opened.
