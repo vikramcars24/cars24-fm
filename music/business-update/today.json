@@ -1,0 +1,18 @@
+{
+  "active": true,
+  "startDate": "2026-06-18",
+  "endDate": "2026-06-20",
+  "triggerTime": "11:00",
+  "title": "Global Pulse May'26",
+  "headline": "Cars24 has never been stronger.",
+  "summary": "Summarizes Cars24's Global Pulse report for May 2026, highlighting key financial and operating metrics. Transaction GMV increased by 6.8% month-over-month (MoM) to rupees 729 crore. Loans disbursed rose by 5.7% MoM to rupees 317 crore, while ANR increased by 8.5% MoM to rupees 141.6 crore. EBITDA saw a significant increase of rupees 10.8 crore MoM to rupees 3.1 crore. Cars procured and sold globally also increased by 13.3% and 7.1% MoM, respectively.",
+  "sourceSlackUrl": "https://cars24.slack.com/archives/C053XTBJC/p1780752190402179",
+  "sourceChannel": "C053XTBJC",
+  "sourceTs": "1780752190.402179",
+  "sourceDate": "2026-06-06",
+  "audio": {
+    "intro": "business-update/2026-06-18-intro.mp3",
+    "bed": "business-update/2026-06-18-bed.mp3"
+  },
+  "generatedAt": "2026-06-18T16:32:21.939Z"
+}

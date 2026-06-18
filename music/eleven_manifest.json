@@ -1,0 +1,149 @@
+{
+  "generatedWith": "Cars24 FM Originals via ElevenLabs Music",
+  "tracks": [
+    {
+      "filename": "Cars24 FM Originals - 20260618-155650 - 01 Neon Rain Drive.mp3",
+      "title": "Neon Rain Drive",
+      "prompt": "instrumental lo-fi night drive, warm rhodes chords, soft vinyl texture, mellow bass, no vocals",
+      "durationMs": 60000,
+      "outputFormat": "mp3_44100_128",
+      "generatedAt": "2026-06-18T15:57:00.256Z",
+      "provider": "Cars24 FM Originals via ElevenLabs Music"
+    },
+    {
+      "filename": "Cars24 FM Originals - 20260618-155700 - 02 Garage Blue Hour.mp3",
+      "title": "Garage Blue Hour",
+      "prompt": "instrumental chillhop for focused building, gentle drums, dusky synths, subtle motion, no vocals",
+      "durationMs": 60000,
+      "outputFormat": "mp3_44100_128",
+      "generatedAt": "2026-06-18T15:57:10.315Z",
+      "provider": "Cars24 FM Originals via ElevenLabs Music"
+    },
+    {
+      "filename": "Cars24 FM Originals - 20260618-155710 - 03 Afterglow Cruise.mp3",
+      "title": "Afterglow Cruise",
+      "prompt": "instrumental late-evening drive music, mellow electronic groove, tasteful ambient pads, no vocals",
+      "durationMs": 60000,
+      "outputFormat": "mp3_44100_128",
+      "generatedAt": "2026-06-18T15:57:20.362Z",
+      "provider": "Cars24 FM Originals via ElevenLabs Music"
+    },
+    {
+      "filename": "Cars24 FM Originals - 20260618-155720 - 04 Citylight Idle.mp3",
+      "title": "Citylight Idle",
+      "prompt": "instrumental lo-fi for thinking and driving, restrained beat, soft keys, light tape wobble, no vocals",
+      "durationMs": 60000,
+      "outputFormat": "mp3_44100_128",
+      "generatedAt": "2026-06-18T15:57:35.967Z",
+      "provider": "Cars24 FM Originals via ElevenLabs Music"
+    },
+    {
+      "filename": "Cars24 FM Originals - 20260618-160600 - 01 Neon Rain Drive.mp3",
+      "title": "Neon Rain Drive",
+      "prompt": "instrumental lo-fi night drive, warm rhodes chords, soft vinyl texture, mellow bass, no vocals",
+      "durationMs": 75000,
+      "outputFormat": "mp3_44100_128",
+      "generatedAt": "2026-06-18T16:06:27.660Z",
+      "provider": "Cars24 FM Originals via ElevenLabs Music"
+    },
+    {
+      "filename": "Cars24 FM Originals - 20260618-160627 - 02 Garage Blue Hour.mp3",
+      "title": "Garage Blue Hour",
+      "prompt": "instrumental chillhop for focused building, gentle drums, dusky synths, subtle motion, no vocals",
+      "durationMs": 75000,
+      "outputFormat": "mp3_44100_128",
+      "generatedAt": "2026-06-18T16:06:38.018Z",
+      "provider": "Cars24 FM Originals via ElevenLabs Music"
+    },
+    {
+      "filename": "Cars24 FM Originals - 20260618-160638 - 03 Afterglow Cruise.mp3",
+      "title": "Afterglow Cruise",
+      "prompt": "instrumental late-evening drive music, mellow electronic groove, tasteful ambient pads, no vocals",
+      "durationMs": 75000,
+      "outputFormat": "mp3_44100_128",
+      "generatedAt": "2026-06-18T16:06:56.326Z",
+      "provider": "Cars24 FM Originals via ElevenLabs Music"
+    },
+    {
+      "filename": "Cars24 FM Originals - 20260618-160656 - 04 Citylight Idle.mp3",
+      "title": "Citylight Idle",
+      "prompt": "instrumental lo-fi for thinking and driving, restrained beat, soft keys, light tape wobble, no vocals",
+      "durationMs": 75000,
+      "outputFormat": "mp3_44100_128",
+      "generatedAt": "2026-06-18T16:07:06.126Z",
+      "provider": "Cars24 FM Originals via ElevenLabs Music"
+    },
+    {
+      "filename": "Cars24 FM Originals - 20260618-160706 - 05 Sunup Warm Start.mp3",
+      "title": "Sunup Warm Start",
+      "prompt": "instrumental morning build music, light percussion, uplifting chords, calm momentum, no vocals",
+      "durationMs": 75000,
+      "outputFormat": "mp3_44100_128",
+      "generatedAt": "2026-06-18T16:07:22.160Z",
+      "provider": "Cars24 FM Originals via ElevenLabs Music"
+    },
+    {
+      "filename": "Cars24 FM Originals - 20260618-160722 - 06 Midnight Service Bay.mp3",
+      "title": "Midnight Service Bay",
+      "prompt": "instrumental nocturnal garage soundtrack, low-slung groove, airy textures, no vocals",
+      "durationMs": 75000,
+      "outputFormat": "mp3_44100_128",
+      "generatedAt": "2026-06-18T16:07:46.718Z",
+      "provider": "Cars24 FM Originals via ElevenLabs Music"
+    },
+    {
+      "filename": "Cars24 FM Originals - 20260618-160746 - 07 Neon Rain Drive.mp3",
+      "title": "Neon Rain Drive",
+      "prompt": "instrumental lo-fi night drive, warm rhodes chords, soft vinyl texture, mellow bass, no vocals",
+      "durationMs": 75000,
+      "outputFormat": "mp3_44100_128",
+      "generatedAt": "2026-06-18T16:07:57.795Z",
+      "provider": "Cars24 FM Originals via ElevenLabs Music"
+    },
+    {
+      "filename": "Cars24 FM Originals - 20260618-160757 - 08 Garage Blue Hour.mp3",
+      "title": "Garage Blue Hour",
+      "prompt": "instrumental chillhop for focused building, gentle drums, dusky synths, subtle motion, no vocals",
+      "durationMs": 75000,
+      "outputFormat": "mp3_44100_128",
+      "generatedAt": "2026-06-18T16:08:08.534Z",
+      "provider": "Cars24 FM Originals via ElevenLabs Music"
+    },
+    {
+      "filename": "Cars24 FM Originals - 20260618-160808 - 09 Afterglow Cruise.mp3",
+      "title": "Afterglow Cruise",
+      "prompt": "instrumental late-evening drive music, mellow electronic groove, tasteful ambient pads, no vocals",
+      "durationMs": 75000,
+      "outputFormat": "mp3_44100_128",
+      "generatedAt": "2026-06-18T16:08:18.703Z",
+      "provider": "Cars24 FM Originals via ElevenLabs Music"
+    },
+    {
+      "filename": "Cars24 FM Originals - 20260618-160818 - 10 Citylight Idle.mp3",
+      "title": "Citylight Idle",
+      "prompt": "instrumental lo-fi for thinking and driving, restrained beat, soft keys, light tape wobble, no vocals",
+      "durationMs": 75000,
+      "outputFormat": "mp3_44100_128",
+      "generatedAt": "2026-06-18T16:08:28.457Z",
+      "provider": "Cars24 FM Originals via ElevenLabs Music"
+    },
+    {
+      "filename": "Cars24 FM Originals - 20260618-160828 - 11 Sunup Warm Start.mp3",
+      "title": "Sunup Warm Start",
+      "prompt": "instrumental morning build music, light percussion, uplifting chords, calm momentum, no vocals",
+      "durationMs": 75000,
+      "outputFormat": "mp3_44100_128",
+      "generatedAt": "2026-06-18T16:08:41.471Z",
+      "provider": "Cars24 FM Originals via ElevenLabs Music"
+    },
+    {
+      "filename": "Cars24 FM Originals - 20260618-160841 - 12 Midnight Service Bay.mp3",
+      "title": "Midnight Service Bay",
+      "prompt": "instrumental nocturnal garage soundtrack, low-slung groove, airy textures, no vocals",
+      "durationMs": 75000,
+      "outputFormat": "mp3_44100_128",
+      "generatedAt": "2026-06-18T16:08:54.099Z",
+      "provider": "Cars24 FM Originals via ElevenLabs Music"
+    }
+  ]
+}

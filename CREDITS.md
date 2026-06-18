@@ -8,7 +8,7 @@ for the CC0 tracks (which do not).
 
 > The licence shown on each artist's **archive.org item page is authoritative.**
 > Track counts below are approximate (derived from filenames) and reflect the
-> current `music/playlist.json` (160 tracks). Source links point at the
+> current `music/playlist.json` (176 tracks). Source links point at the
 > archive.org collections the tracks were fetched from.
 
 ## Attribution required
@@ -61,6 +61,16 @@ condition.
 - ~8 tracks are not cleanly attributable from their filename alone (compilation
   samplers); their archive.org item pages carry the canonical artist + licence.
 - The DJ voice is generated with **ElevenLabs** (pre-rendered clips in `music/dj/`).
+- Optional build-time AI tracks in `music/` can also be generated with
+  **ElevenLabs Music** and tracked in `music/eleven_manifest.json`. Those are
+  `Cars24 FM Originals` for this project, not fetched third-party catalogue
+  tracks.
+- Daily celebration-block audio under `music/birthday/` can be generated locally
+  with ElevenLabs from employee birthday and anniversary data for the station’s
+  `10:00 AM IST` celebration slot.
+- Monthly business-update bulletin audio under `music/business-update/` can be
+  generated locally with ElevenLabs from the Slack `Global Pulse` post and its
+  attached file summary for the station’s `11:00 AM IST` briefing slot.
 - The generative engine (Web Audio synth between tracks) is original to this
   project — no licence obligations.
 - **For the OBS → YouTube livestream path:** CC0 and most CC&nbsp;BY tracks are

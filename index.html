@@ -290,7 +290,7 @@
       Lee Rosevere, Broke For Free &amp; Kai Engel; CC&nbsp;BY-SA by Jahzzar.
       Full attribution in <a href="CREDITS.md" target="_blank" rel="noopener">CREDITS.md</a>.
       <br>DJ voice generated with ElevenLabs.
-      <br><span style="opacity:.6">build 2026-06-15d self-hosted low-latency library (160 tracks) + multi-genre, lo-fi-curated, dayparted, attributed</span>
+      <br><span style="opacity:.6">build 2026-06-18c self-hosted library (176 tracks) + ElevenLabs originals + celebration block at 10 AM IST + Global Pulse bulletin at 11 AM IST + multi-genre, dayparted, attributed</span>
     </div>
   </div>
 </div>
@@ -381,6 +381,13 @@ function dayGenrePool() { return DAY_GENRE_POOLS[daypart()] || GENRE_POOL; }
 // Heuristic, not exact — just enough to bias ordering toward the time of day.
 function trackEnergy(file) {
   const s = file.toLowerCase();
+  if (/cars24 fm originals|cars24 fm eleven/.test(s)) {
+    if (/midnight|night|neon rain|citylight|idle/.test(s)) return 0.2;
+    if (/sunup|morning|warm start/.test(s)) return 0.4;
+    if (/garage blue hour|afterglow|cruise/.test(s)) return 0.55;
+    if (/pulse|expressway|bright|rush|drive/.test(s)) return 0.75;
+    return 0.5;
+  }
   if (/roller disco|robot dance|discolounge|acidjazz|dd groove|beach party|cipher|off to osaka|dances and dames|poupis|ultra person|adventure goes on|4 4 kodek|danse macabre|champ de|invisible|superconduct/.test(s)) return 0.85;
   if (/zabriskie|kai engel|music for ?podcasts|lofi ambient|minimal ambient|chill for real|reliquary|candlelight|gymnopedie|brandenburg|narcissus|plain loafer|as i figure|wallpaper|hypnothis|gurdonark|anthropomystery/.test(s)) return 0.15;
   // Default 0.5 is intentional, not a gap: jahzzar, broke for free, lee rosevere
@@ -442,7 +449,7 @@ function nextTrack() {
    missing or empty, the generative engine plays — so the page always works. */
 const playlist = { tracks: [], queue: [], el: null, gain: null, idx: 0, on: false,
   // hybrid rotation: real tracks interleaved with on-the-fly AI-generated interludes
-  mode: 'track', count: 0, genEvery: 4, genTimer: null, band: null };
+  mode: 'track', count: 0, genEvery: 8, genTimer: null, band: null };
 
 /* ---- Cars24 values v3 + vision: shown on screen AND read aloud DJ-style ----
    `line` is the on-screen text; `say` holds spoken paraphrases. The DJ wraps a
@@ -696,6 +703,212 @@ async function loadDJ() {
   } catch (e) { /* no clips -> browser-speech fallback */ }
 }
 
+const birthdayBlock = {
+  manifest: null,
+  timer: null,
+  replayDelayMs: 16000,
+  loadPromise: null,
+  load() {
+    if (!this.loadPromise) {
+      this.loadPromise = fetch('music/birthday/today.json', { cache: 'no-store' })
+        .then(res => res.ok ? res.json() : null)
+        .catch(() => null)
+        .then(data => { this.manifest = data; return data; });
+    }
+    return this.loadPromise;
+  },
+  nowIstParts() {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
+    }).formatToParts(new Date());
+    const get = t => parts.find(p => p.type === t)?.value || '';
+    return {
+      date: `${get('year')}-${get('month')}-${get('day')}`,
+      hour: Number(get('hour') || 0),
+      minute: Number(get('minute') || 0),
+      second: Number(get('second') || 0),
+    };
+  },
+  shouldReplaySoon() {
+    const m = this.manifest;
+    if (!m || !m.celebrations || !m.celebrations.length || !m.audio || !m.audio.intro || !m.audio.bed) return false;
+    const now = this.nowIstParts();
+    if (m.date && m.date !== now.date) return false;
+    const [hh, mm] = String(m.triggerTime || '10:00').split(':').map(n => Number(n || 0));
+    return (now.hour > hh) || (now.hour === hh && now.minute >= mm);
+  },
+  msUntilTrigger() {
+    const m = this.manifest;
+    if (!m || !m.celebrations || !m.celebrations.length) return null;
+    const now = this.nowIstParts();
+    if (m.date && m.date !== now.date) return null;
+    const [hh, mm] = String(m.triggerTime || '10:00').split(':').map(n => Number(n || 0));
+    const nowSec = now.hour * 3600 + now.minute * 60 + now.second;
+    const targetSec = hh * 3600 + mm * 60;
+    if (nowSec >= targetSec) return 0;
+    return (targetSec - nowSec) * 1000;
+  },
+  playedKey() {
+    return this.manifest && this.manifest.date ? `c24fm_birthday_${this.manifest.date}` : '';
+  },
+  hasPlayed() {
+    try {
+      const key = this.playedKey();
+      return key ? localStorage.getItem(key) === '1' : false;
+    } catch (e) { return false; }
+  },
+  markPlayed() {
+    try {
+      const key = this.playedKey();
+      if (key) localStorage.setItem(key, '1');
+    } catch (e) { /* ignore */ }
+  },
+  showCard() {
+    const celebrations = this.manifest && this.manifest.celebrations ? this.manifest.celebrations : [];
+    const birthdays = celebrations.filter(item => item.type === 'birthday').map(item => item.name);
+    const anniversaries = celebrations.filter(item => item.type === 'anniversary').map(item => `${item.name} · ${item.years || 1} years`);
+    const lines = [];
+    if (birthdays.length) lines.push(`Birthdays: ${birthdays.join(', ')}`);
+    if (anniversaries.length) lines.push(`Anniversaries: ${anniversaries.join(', ')}`);
+    valuesUI.showCard({
+      kicker: 'Cars24 FM · celebration block',
+      num: '❤',
+      name: 'Today we celebrate',
+      line: lines.length ? lines.join('  •  ') : 'Today we’re celebrating our Cars24 builders.',
+      brand: true,
+    }, 12000);
+  },
+  play() {
+    const m = this.manifest;
+    if (!audio.playing || !m || this.hasPlayed()) return false;
+    if (!m.audio || !m.audio.intro || !m.audio.bed) return false;
+    this.showCard();
+    currentSectionName = 'Cars24 FM · celebration block';
+    this.markPlayed();
+    return dj.playSeq(['music/' + m.audio.intro, 'music/' + m.audio.bed]);
+  },
+  schedule() {
+    clearTimeout(this.timer);
+    this.load().then(() => {
+      if (!audio.playing || !this.manifest || this.hasPlayed()) return;
+      if (this.shouldReplaySoon()) {
+        this.timer = setTimeout(() => { if (audio.playing) this.play(); }, this.replayDelayMs);
+        return;
+      }
+      const ms = this.msUntilTrigger();
+      if (ms == null || ms <= 0) return;
+      this.timer = setTimeout(() => { if (audio.playing) this.play(); }, ms);
+    });
+  },
+  cancel() { clearTimeout(this.timer); this.timer = null; },
+};
+
+const businessUpdateBlock = {
+  manifest: null,
+  timer: null,
+  replayDelayMs: 22000,
+  loadPromise: null,
+  load() {
+    if (!this.loadPromise) {
+      this.loadPromise = fetch('music/business-update/today.json', { cache: 'no-store' })
+        .then(res => res.ok ? res.json() : null)
+        .catch(() => null)
+        .then(data => { this.manifest = data; return data; });
+    }
+    return this.loadPromise;
+  },
+  nowIstParts() {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
+    }).formatToParts(new Date());
+    const get = t => parts.find(p => p.type === t)?.value || '';
+    return {
+      date: `${get('year')}-${get('month')}-${get('day')}`,
+      hour: Number(get('hour') || 0),
+      minute: Number(get('minute') || 0),
+      second: Number(get('second') || 0),
+    };
+  },
+  isActiveToday() {
+    const m = this.manifest;
+    if (!m || !m.active || !m.startDate || !m.endDate) return false;
+    const now = this.nowIstParts().date;
+    return now >= m.startDate && now <= m.endDate;
+  },
+  playedKey() {
+    const m = this.manifest;
+    const date = this.nowIstParts().date;
+    return m && m.startDate ? `c24fm_business_update_${m.startDate}_${date}` : '';
+  },
+  hasPlayed() {
+    try {
+      const key = this.playedKey();
+      return key ? localStorage.getItem(key) === '1' : false;
+    } catch (e) { return false; }
+  },
+  markPlayed() {
+    try {
+      const key = this.playedKey();
+      if (key) localStorage.setItem(key, '1');
+    } catch (e) { /* ignore */ }
+  },
+  shouldReplaySoon() {
+    if (!this.isActiveToday()) return false;
+    const m = this.manifest;
+    if (!m.audio || !m.audio.intro || !m.audio.bed) return false;
+    const now = this.nowIstParts();
+    const [hh, mm] = String(m.triggerTime || '11:00').split(':').map(n => Number(n || 0));
+    return (now.hour > hh) || (now.hour === hh && now.minute >= mm);
+  },
+  msUntilTrigger() {
+    if (!this.isActiveToday()) return null;
+    const m = this.manifest;
+    const now = this.nowIstParts();
+    const [hh, mm] = String(m.triggerTime || '11:00').split(':').map(n => Number(n || 0));
+    const nowSec = now.hour * 3600 + now.minute * 60 + now.second;
+    const targetSec = hh * 3600 + mm * 60;
+    if (nowSec >= targetSec) return 0;
+    return (targetSec - nowSec) * 1000;
+  },
+  showCard() {
+    const m = this.manifest || {};
+    valuesUI.showCard({
+      kicker: 'Cars24 FM · Global Pulse',
+      num: '↑',
+      name: m.title || 'Business update',
+      line: m.headline || 'Latest monthly business update from Cars24 leadership.',
+      brand: true,
+    }, 14000);
+  },
+  play() {
+    const m = this.manifest;
+    if (!audio.playing || !m || !this.isActiveToday() || this.hasPlayed()) return false;
+    if (!m.audio || !m.audio.intro || !m.audio.bed) return false;
+    this.showCard();
+    currentSectionName = 'Cars24 FM · Global Pulse';
+    this.markPlayed();
+    return dj.playSeq(['music/' + m.audio.intro, 'music/' + m.audio.bed]);
+  },
+  schedule() {
+    clearTimeout(this.timer);
+    this.load().then(() => {
+      if (!audio.playing || !this.manifest || this.hasPlayed()) return;
+      if (this.shouldReplaySoon()) {
+        this.timer = setTimeout(() => { if (audio.playing) this.play(); }, this.replayDelayMs);
+        return;
+      }
+      const ms = this.msUntilTrigger();
+      if (ms == null || ms <= 0) return;
+      this.timer = setTimeout(() => { if (audio.playing) this.play(); }, ms);
+    });
+  },
+  cancel() { clearTimeout(this.timer); this.timer = null; },
+};
+
 // A station break: show the value/vision card AND have the DJ talk over it.
 function stationBreak() {
   const v = valuesUI.show();
@@ -704,7 +917,7 @@ function stationBreak() {
 
 const valuesUI = {
   card: null, kicker: null, num: null, name: null, line: null, idx: 0, hideTimer: null,
-  show() {
+  showCard(v, durationMs = 9500) {
     if (!this.card) {
       this.card   = document.getElementById('valuesCard');
       this.kicker = document.getElementById('vKicker');
@@ -712,10 +925,6 @@ const valuesUI = {
       this.name   = document.getElementById('vName');
       this.line   = document.getElementById('vLine');
     }
-    const i = this.idx % VALUES.length;
-    this.shownIndex = i;
-    const v = VALUES[i];
-    this.idx++;
     this.kicker.textContent = v.kicker;
     this.num.textContent = v.num;
     this.name.textContent = v.name;
@@ -723,8 +932,15 @@ const valuesUI = {
     this.card.classList.toggle('is-brand', !!v.brand);
     this.card.classList.add('show');
     clearTimeout(this.hideTimer);
-    this.hideTimer = setTimeout(() => this.card.classList.remove('show'), 9500);
+    this.hideTimer = setTimeout(() => this.card.classList.remove('show'), durationMs);
     return v;
+  },
+  show() {
+    const i = this.idx % VALUES.length;
+    this.shownIndex = i;
+    const v = VALUES[i];
+    this.idx++;
+    return this.showCard(v, 9500);
   },
   hide() { if (this.card) { clearTimeout(this.hideTimer); this.card.classList.remove('show'); } },
 };
@@ -1253,6 +1469,8 @@ function play() {
       valuesUI.idx = 0; valuesUI.show();   // mission card: "Better drives, better lives"
       dj.welcome();
     }
+    birthdayBlock.schedule();
+    businessUpdateBlock.schedule();
   }
   ui.setPlaying(true);
 }
@@ -1260,6 +1478,8 @@ function play() {
 function pause() {
   if (audio.playing) {
     audio.playing = false;
+    birthdayBlock.cancel();
+    businessUpdateBlock.cancel();
     if (audio.genBreakTimer) { clearTimeout(audio.genBreakTimer); audio.genBreakTimer = null; }
     if (playlist.genTimer) { clearTimeout(playlist.genTimer); playlist.genTimer = null; }
     if (playlist.on) {
@@ -1764,7 +1984,7 @@ driftViewers();
 // Load the optional real-music playlist (music/playlist.json). If present with
 // entries, pressing play uses those real tracks; otherwise the generative
 // engine plays. The "now playing" readout shows which mode is active.
-const playlistReady = Promise.all([loadPlaylist(), loadDJ()]);
+const playlistReady = Promise.all([loadPlaylist(), loadDJ(), birthdayBlock.load(), businessUpdateBlock.load()]);
 
 // likes
 let liked = false;

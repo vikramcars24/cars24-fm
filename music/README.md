@@ -6,6 +6,36 @@ plays those real tracks (shuffled, continuous) instead of the built-in
 generative engine. If the list is empty, the generative engine plays — so the
 page always works.
 
+You can also generate original instrumental tracks locally with ElevenLabs:
+
+```bash
+cd /Users/vikram/Documents/cars24-fm
+node scripts/generate-eleven-music.mjs --count 4 --duration-ms 60000 --add-to-playlist
+```
+
+That writes `.mp3` files directly into this folder and logs prompt metadata in
+`eleven_manifest.json`. Generated files use the `Cars24 FM Originals - ...`
+prefix. The key is only used at build time on your machine.
+
+Celebration-block audio lives under `music/birthday/` and is generated separately
+from `data/celebrations.json`:
+
+```bash
+node scripts/generate-birthday-block.mjs --date 2026-06-18
+```
+
+If there are no celebrations yet, keep `data/celebrations.json` as `[]` and the site
+will skip the block cleanly.
+
+Monthly business-update bulletin audio lives under `music/business-update/` and
+can be generated from the Slack permalink for the latest `Global Pulse` post:
+
+```bash
+node scripts/generate-business-update-block.mjs \
+  --slack-link "https://cars24.slack.com/archives/C053XTBJC/p1780752190402179" \
+  --days 3
+```
+
 ## How to add tracks
 
 1. Download royalty-free lo-fi tracks (see sources below) and copy them here,
