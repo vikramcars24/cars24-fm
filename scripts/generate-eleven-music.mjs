@@ -2,8 +2,9 @@
 
 import fs from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const root = "/Users/vikram/Documents/cars24-fm";
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const musicDir = path.join(root, "music");
 const playlistPath = path.join(musicDir, "playlist.json");
 const manifestPath = path.join(musicDir, "eleven_manifest.json");

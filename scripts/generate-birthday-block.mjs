@@ -2,8 +2,9 @@
 
 import fs from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const root = "/Users/vikram/Documents/cars24-fm";
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const celebrationsPath = path.join(root, "data", "celebrations.json");
 const birthdaysPath = path.join(root, "data", "birthdays.json");
 const outDir = path.join(root, "music", "birthday");

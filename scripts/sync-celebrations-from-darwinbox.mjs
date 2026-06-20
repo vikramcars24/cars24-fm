@@ -2,9 +2,11 @@
 
 import fs from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const fmRoot = "/Users/vikram/Documents/cars24-fm";
-const defaultDarwinboxOutput = "/Users/vikram/projects/darwinbox/output";
+const fmRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const defaultDarwinboxOutput =
+  process.env.DARWINBOX_OUTPUT_DIR || path.join(process.env.HOME || "", "projects", "darwinbox", "output");
 const outPath = path.join(fmRoot, "data", "celebrations.json");
 
 function usage() {

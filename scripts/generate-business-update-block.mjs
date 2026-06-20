@@ -3,8 +3,9 @@
 import fs from "node:fs/promises";
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const root = "/Users/vikram/Documents/cars24-fm";
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const outDir = path.join(root, "music", "business-update");
 const manifestPath = path.join(outDir, "today.json");
 const IST = "Asia/Kolkata";
