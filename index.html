@@ -290,7 +290,7 @@
       Lee Rosevere, Broke For Free &amp; Kai Engel; CC&nbsp;BY-SA by Jahzzar.
       Full attribution in <a href="CREDITS.md" target="_blank" rel="noopener">CREDITS.md</a>.
       <br>DJ voice generated with ElevenLabs.
-      <br><span style="opacity:.6">build 2026-06-18c self-hosted library (176 tracks) + ElevenLabs originals + celebration block at 10 AM IST + Global Pulse bulletin at 11 AM IST + multi-genre, dayparted, attributed</span>
+      <br><span style="opacity:.6">build 2026-06-20a self-hosted library (198 tracks) + ElevenLabs originals + celebration block at 10 AM IST + Global Pulse bulletin at 11 AM IST + multi-genre, dayparted, attributed</span>
     </div>
   </div>
 </div>
@@ -390,8 +390,9 @@ function trackEnergy(file) {
   }
   if (/roller disco|robot dance|discolounge|acidjazz|dd groove|beach party|cipher|off to osaka|dances and dames|poupis|ultra person|adventure goes on|4 4 kodek|danse macabre|champ de|invisible|superconduct/.test(s)) return 0.85;
   if (/zabriskie|kai engel|music for ?podcasts|lofi ambient|minimal ambient|chill for real|reliquary|candlelight|gymnopedie|brandenburg|narcissus|plain loafer|as i figure|wallpaper|hypnothis|gurdonark|anthropomystery/.test(s)) return 0.15;
-  // Default 0.5 is intentional, not a gap: jahzzar, broke for free, lee rosevere
-  // misc, melodic komiku and loyalty lo-fi are genuinely mellow-mid. Only add a
+  if (/jahzzar|bunk|sele|message/.test(s)) return 0.55;
+  // Default 0.5 is intentional, not a gap: broke for free, lee rosevere misc,
+  // melodic komiku and loyalty lo-fi are genuinely mellow-mid. Only add a
   // keyword above when a track is clearly calm-ambient or clearly upbeat/dance.
   return 0.5;
 }

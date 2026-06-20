@@ -8,7 +8,7 @@ for the CC0 tracks (which do not).
 
 > The licence shown on each artist's **archive.org item page is authoritative.**
 > Track counts below are approximate (derived from filenames) and reflect the
-> current `music/playlist.json` (176 tracks). Source links point at the
+> current `music/playlist.json` (198 tracks). Source links point at the
 > archive.org collections the tracks were fetched from.
 
 ## Attribution required
@@ -21,7 +21,7 @@ for the CC0 tracks (which do not).
   *Hypnothis*, *DiscoLounge*, jazz/oddities samplers, et al.
   https://incompetech.com ·
   [archive.org](https://archive.org/details/KevinMacLeod_2019-04_Discography)
-- **Lee Rosevere** — ~20 tracks · *Music for Podcasts 2/4/5/6*, *Four Reasons*,
+- **Lee Rosevere** — ~24 tracks · *Music for Podcasts 2/4/5/6*, *Four Reasons*,
   *Love Wins*. https://leerosevere.bandcamp.com ·
   [archive.org](https://archive.org/details/leerosevere_musicforpodcasts_6)
 - **Broke For Free** — ~13 tracks · *Layers*, *Directionless EP*.
@@ -36,7 +36,7 @@ for the CC0 tracks (which do not).
 artist endorses Cars24. Credit is carried in the page footer and here.
 
 ### CC BY-SA (Attribution-ShareAlike)
-- **Jahzzar** — ~12 tracks · *Message*, *Sele*, *Kuddelmuddel*, *Bunk*.
+- **Jahzzar** — ~21 tracks · *Message*, *Sele*, *Kuddelmuddel*, *Bunk*.
   https://betterwithmusic.com ·
   [archive.org](https://archive.org/details/Jahzzar-Message)
 
@@ -49,7 +49,7 @@ condition.
 ## No attribution required (credited anyway)
 
 ### CC0 (Public Domain Dedication)
-- **Loyalty Freak Music** — ~37 tracks · *LOFI AMBIENT SONGS*, *CHILL FOR REAL*,
+- **Loyalty Freak Music** — ~40 tracks · *LOFI AMBIENT SONGS*, *CHILL FOR REAL*,
   *ROBOT DANCE*, *ROLLER DISCO DANCE DANCE*, *GAME JAM*, *INSTRUMENTAL R&B BEATS*,
   and more. https://loyaltyfreakmusic.com ·
   [archive.org](https://archive.org/details/loyalty-freak-music-lofi-ambient-songs)
