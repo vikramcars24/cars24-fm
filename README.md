@@ -8,7 +8,7 @@ as a single self-contained web page.
 
 ## What's inside
 
-- **Hybrid endless audio**: hundreds of hand-picked Creative Commons (CC BY) tracks
+- **Hybrid endless audio**: 109 quality-screened Creative Commons tracks
   stream from the Internet Archive, shuffled and continuous, *woven with* the
   built-in AI lo-fi engine — every few songs the station hands off to a live
   generated interlude, so the stream never repeats and never stops. If a track
@@ -72,6 +72,19 @@ The output and report are written to `build/mastered-audio/`. This improves
 consistency but cannot restore detail lost in a low-bitrate source; replace
 128 kbps originals with WAV, FLAC, or high-quality AAC when available, then
 run the script again.
+
+The production catalogue has also been upgraded directly from verified
+Internet Archive FLAC originals where available. To repeat the source upgrade
+and quality gate:
+
+```bash
+node scripts/upgrade-archive-sources.mjs
+node scripts/prune-low-quality-tracks.mjs
+```
+
+The quality gate removes playlist entries below 128 kbps. It leaves the source
+files intact when no safe replacement exists, so licensing and attribution
+history remain auditable in Git.
 
 DJ speech is also protected in the browser with gentler music ducking, speech
 compression, and a fast final limiter. OBS should retain its Compressor and
