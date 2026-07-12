@@ -175,6 +175,17 @@
     margin-top: 8px; font-size: 13px; color: var(--orange);
     letter-spacing: .3px; font-variant-numeric: tabular-nums;
   }
+  .stream-now-playing {
+    display: none; position: absolute; left: 28px; bottom: 24px; z-index: 12;
+    max-width: 70%; padding: 10px 15px; border-radius: 10px;
+    background: rgba(10,16,34,.78); color: #fff; font-size: 15px; font-weight: 650;
+    letter-spacing: .2px; backdrop-filter: blur(8px);
+  }
+  body.stream-mode { overflow: hidden; background: #000; }
+  body.stream-mode .page { width: 100vw; max-width: none; margin: 0; padding: 0; }
+  body.stream-mode .frame { width: 100vw; height: 100vh; aspect-ratio: 16 / 9; border-radius: 0; }
+  body.stream-mode .info { display: none; }
+  body.stream-mode .stream-now-playing { display: block; }
   .chips { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
   .chip {
     background: var(--surface); border-radius: 12px;
@@ -227,6 +238,7 @@
       <div class="values-rule"></div>
       <div class="values-line" id="vLine"></div>
     </div>
+    <div class="stream-now-playing" id="streamNowPlaying">♫ Cars24 FM</div>
     <div class="badge-row">
       <div class="live-badge"><span class="live-dot"></span>LIVE</div>
       <div class="viewers-badge"><span id="viewers">4</span> watching now</div>
@@ -290,7 +302,7 @@
       Lee Rosevere, Broke For Free &amp; Kai Engel; CC&nbsp;BY-SA by Jahzzar.
       Full attribution in <a href="CREDITS.md" target="_blank" rel="noopener">CREDITS.md</a>.
       <br>DJ voice generated with ElevenLabs.
-      <br><span style="opacity:.6">build 2026-06-20a self-hosted library (198 tracks) + ElevenLabs originals + celebration block at 10 AM IST + Global Pulse bulletin at 11 AM IST + multi-genre, dayparted, attributed</span>
+      <br><span style="opacity:.6">build 2026-07-12a · stream mode + mastered output protection + celebrations at 10 AM IST + Global Pulse at 11 AM IST</span>
     </div>
   </div>
 </div>
@@ -583,7 +595,7 @@ const dj = {
     const d = audio.duck, t = () => audio.ctx.currentTime;
     const lang = (this.voice && /en[-_]US/i.test(this.voice.lang)) ? this.voice.lang : 'en-US';
     // gentle blend: keep music ~65% under the voice instead of cutting it out
-    const down = () => { if (d) { d.gain.cancelScheduledValues(t()); d.gain.setTargetAtTime(0.72, t(), 0.3); } };
+    const down = () => { if (d) { d.gain.cancelScheduledValues(t()); d.gain.setTargetAtTime(0.82, t(), 0.22); } };
     const up   = () => { if (d) d.gain.setTargetAtTime(1, t(), 0.7); };
     const parts = (text.match(/[^.!?—]+[.!?—]*/g) || [text]).map(s => s.trim()).filter(Boolean);
     let pending = parts.length;
@@ -631,7 +643,7 @@ const dj = {
   },
   // shallow, smooth duck: music stays present (~72%) and glides down/up so the
   // voice and the track feel mixed together rather than one cutting the other.
-  duckDown() { const d = audio.duck; if (d) { const t = audio.ctx.currentTime; d.gain.cancelScheduledValues(t); d.gain.setTargetAtTime(0.72, t, 0.3); } },
+  duckDown() { const d = audio.duck; if (d) { const t = audio.ctx.currentTime; d.gain.cancelScheduledValues(t); d.gain.setTargetAtTime(0.82, t, 0.22); } },
   unduck()   { const d = audio.duck; if (d) d.gain.setTargetAtTime(1, audio.ctx.currentTime, 0.7); },
   // play one or more clips back-to-back over a single duck (longer DJ segments)
   playSeq(urls) {
@@ -1064,20 +1076,29 @@ function initAudio() {
   tone.type = 'lowpass';
   tone.frequency.value = 3400;
   const comp = ctx.createDynamicsCompressor();
-  comp.threshold.value = -18;
-  comp.ratio.value = 3;
+  comp.threshold.value = -20;
+  comp.knee.value = 12;
+  comp.ratio.value = 3.5;
+  comp.attack.value = 0.012;
+  comp.release.value = 0.22;
+  const limiter = ctx.createDynamicsCompressor();
+  limiter.threshold.value = -2;
+  limiter.knee.value = 0;
+  limiter.ratio.value = 20;
+  limiter.attack.value = 0.003;
+  limiter.release.value = 0.12;
   const analyser = ctx.createAnalyser();
   analyser.fftSize = 256;
   // duck node sits after master so the DJ can dip the music to talk over it
   // without touching the user's volume (which lives on master.gain).
   const duck = ctx.createGain();
   duck.gain.value = 1;
-  master.connect(duck).connect(tone).connect(comp).connect(analyser).connect(ctx.destination);
+  master.connect(duck).connect(tone).connect(comp).connect(limiter).connect(analyser).connect(ctx.destination);
   audio.duck = duck;
   // DJ voice bus: connects AFTER the duck, so when we dip the music to talk the
   // voice itself stays full. Goes through the same comp/analyser → captured by OBS.
   const djGain = ctx.createGain();
-  djGain.gain.value = 0.95;
+  djGain.gain.value = 0.88;
   djGain.connect(tone);                         // dry voice
   // short reverb send so the voice sits INSIDE the mix, not pasted dry on top —
   // synthetic impulse (exponentially-decaying noise) keeps it self-contained.
@@ -1965,12 +1986,15 @@ document.addEventListener('keydown', e => {
 
 // "now playing" track name — updates as the DJ moves between sections
 const nowPlayingEl = document.getElementById('nowPlaying');
+const streamNowPlayingEl = document.getElementById('streamNowPlaying');
 setInterval(() => {
-  nowPlayingEl.textContent = audio.playing
+  const label = audio.playing
     ? '♫ now playing — ' + currentSectionName
     : (playlist.tracks.length
         ? '♫ ' + playlist.tracks.length + ' tracks loaded — press play'
         : '♫ press play to start the set');
+  nowPlayingEl.textContent = label;
+  streamNowPlayingEl.textContent = label;
 }, 500);
 
 // drifting viewer count (homage to the original's cosy 4 viewers)
@@ -1998,6 +2022,11 @@ document.getElementById('likes').parentElement.addEventListener('click', e => {
   liked = !liked;
   document.getElementById('likes').textContent = liked ? '216' : '215';
 });
+
+// Stream mode: `stream=1` removes website chrome and adds a compact now-playing overlay.
+if (/(?:[?&#])stream=1(?:&|$)/.test(location.search + location.hash)) {
+  document.body.classList.add('stream-mode');
+}
 
 // Stream mode: open with ?autoplay=1 to start the channel with no click,
 // for OBS browser sources / kiosk displays / 24-7 YouTube streaming.

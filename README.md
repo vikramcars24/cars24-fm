@@ -52,6 +52,31 @@ open cars24-fm/index.html        # or just double-click it
 python3 -m http.server -d cars24-fm 8080
 ```
 
+For OBS, use the dedicated clean 16:9 view. It hides the website information
+panel and keeps a compact now-playing label inside the visual:
+
+```text
+https://vikramchopra.in/cars24-fm/?autoplay=1&stream=1
+```
+
+## Master the audio catalogue
+
+Create a non-destructive, stream-ready copy of every local track at 48 kHz,
+stereo, 256 kbps AAC, normalized to approximately -14 LUFS and -1 dB true peak:
+
+```bash
+./scripts/master-audio.sh
+```
+
+The output and report are written to `build/mastered-audio/`. This improves
+consistency but cannot restore detail lost in a low-bitrate source; replace
+128 kbps originals with WAV, FLAC, or high-quality AAC when available, then
+run the script again.
+
+DJ speech is also protected in the browser with gentler music ducking, speech
+compression, and a fast final limiter. OBS should retain its Compressor and
+Limiter filters as the final broadcast safety stage.
+
 ## Generate ElevenLabs tracks
 
 If `ELEVENLABS_API_KEY` is set locally on your machine, you can mint original
@@ -165,5 +190,17 @@ https://vikramcars24.github.io/cars24-fm/
 
 Without the `gh` CLI the script still pushes the repo, then enable Pages
 manually: **Settings → Pages → Source: Deploy from branch → main / root**.
+
+## Keep the office Mac broadcasting
+
+After cloning or pulling this repository on the office Mac, run:
+
+```bash
+./scripts/install-office-stream.sh
+```
+
+This installs OBS when needed and creates a login service that keeps the Mac
+awake and relaunches OBS with streaming enabled. Enter the YouTube stream key
+once in OBS; credentials and keys always remain machine-local and outside Git.
 
 > Unofficial concept. Not affiliated with YouTube or Anthropic.
