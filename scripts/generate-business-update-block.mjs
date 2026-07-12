@@ -264,11 +264,28 @@ async function main() {
   const bedFile = `${startDate}-bed.mp3`;
 
   await fs.mkdir(outDir, { recursive: true });
-  const voiceId = await resolveVoiceId(apiKey, "Liam");
-  if (!voiceId) throw new Error("No ElevenLabs voice available");
+  try {
+    const voiceId = await resolveVoiceId(apiKey, "Liam");
+    if (!voiceId) throw new Error("No ElevenLabs voice available");
+    await genTts(apiKey, voiceId, ttsScript({ title, headline, summary }), path.join(outDir, introFile));
+  } catch (error) {
+    try {
+      await fs.access(path.join(outDir, introFile));
+      console.warn(`Speech generation unavailable; keeping the existing ${introFile}.`);
+    } catch {
+      throw error;
+    }
+  }
 
-  await genTts(apiKey, voiceId, ttsScript({ title, headline, summary }), path.join(outDir, introFile));
-  await genBed(apiKey, "short business radio bulletin sting for Cars24 FM, confident, modern, optimistic, no vocals", path.join(outDir, bedFile));
+  let bedRef = `business-update/${bedFile}`;
+  try {
+    await genBed(apiKey, "short business radio bulletin sting for Cars24 FM, confident, modern, optimistic, no vocals", path.join(outDir, bedFile));
+  } catch (error) {
+    const files = (await fs.readdir(outDir)).filter(name => name.endsWith("-bed.mp3")).sort().reverse();
+    if (!files.length) throw error;
+    bedRef = `business-update/${files[0]}`;
+    console.warn(`Music generation unavailable; reusing ${files[0]} as the business-update bed.`);
+  }
 
   await writeJson(manifestPath, {
     active: true,
@@ -284,7 +301,7 @@ async function main() {
     sourceDate,
     audio: {
       intro: `business-update/${introFile}`,
-      bed: `business-update/${bedFile}`,
+      bed: bedRef,
     },
     generatedAt: new Date().toISOString(),
   });
