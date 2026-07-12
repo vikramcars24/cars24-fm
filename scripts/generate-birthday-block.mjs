@@ -183,16 +183,35 @@ async function main() {
   const apiKey = process.env.ELEVENLABS_API_KEY;
   if (!apiKey) throw new Error("ELEVENLABS_API_KEY is not set");
 
-  const voiceId = await resolveVoiceId(apiKey, "Liam");
-  if (!voiceId) throw new Error("No ElevenLabs voice available");
-
   const introFile = `${date}-intro.mp3`;
   const bedFile = `${date}-bed.mp3`;
   const introText = celebrationIntroText(todays);
   const bedPrompt = `short celebratory instrumental radio sting for Cars24 FM, upbeat but tasteful, modern, warm, no vocals`;
 
-  await genTts(apiKey, voiceId, introText, path.join(outDir, introFile));
-  await genBed(apiKey, bedPrompt, path.join(outDir, bedFile));
+  try {
+    const voiceId = await resolveVoiceId(apiKey, "Liam");
+    if (!voiceId) throw new Error("No ElevenLabs voice available");
+    await genTts(apiKey, voiceId, introText, path.join(outDir, introFile));
+  } catch (error) {
+    try {
+      await fs.access(path.join(outDir, introFile));
+      console.warn(`Speech generation unavailable; keeping the existing ${introFile}.`);
+    } catch {
+      throw error;
+    }
+  }
+  let bedRef = `birthday/${bedFile}`;
+  try {
+    await genBed(apiKey, bedPrompt, path.join(outDir, bedFile));
+  } catch (error) {
+    const files = (await fs.readdir(outDir))
+      .filter(name => name.endsWith("-bed.mp3"))
+      .sort()
+      .reverse();
+    if (!files.length) throw error;
+    bedRef = `birthday/${files[0]}`;
+    console.warn(`Music generation unavailable; reusing ${files[0]} as the celebration bed.`);
+  }
 
   await writeJson(manifestPath, {
     date,
@@ -201,7 +220,7 @@ async function main() {
     celebrations: todays,
     audio: {
       intro: `birthday/${introFile}`,
-      bed: `birthday/${bedFile}`,
+      bed: bedRef,
     },
     generatedAt: new Date().toISOString(),
   });

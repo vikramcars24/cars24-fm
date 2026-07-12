@@ -128,10 +128,14 @@ async function main() {
     }
   }
 
-  celebrations.sort((a, b) => `${a.type}:${a.name}`.localeCompare(`${b.type}:${b.name}`));
+  const unique = [...new Map(celebrations.map(item => [
+    `${item.type}:${item.name.toLowerCase()}`,
+    item,
+  ])).values()];
+  unique.sort((a, b) => `${a.type}:${a.name}`.localeCompare(`${b.type}:${b.name}`));
   await fs.mkdir(path.dirname(outPath), { recursive: true });
-  await fs.writeFile(outPath, JSON.stringify(celebrations, null, 2) + "\n", "utf8");
-  console.log(`Wrote ${celebrations.length} celebration(s) to ${outPath}`);
+  await fs.writeFile(outPath, JSON.stringify(unique, null, 2) + "\n", "utf8");
+  console.log(`Wrote ${unique.length} celebration(s) to ${outPath}`);
   if (!dirs.length) {
     console.log(`No readable Darwinbox employee_directory.json dumps found under ${opts.darwinboxOutput}`);
   }
