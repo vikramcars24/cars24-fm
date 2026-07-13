@@ -1,327 +1,136 @@
 [
   {
-    "date": "2026-07-12",
+    "date": "2026-07-13",
     "type": "anniversary",
+    "name": "Aboni Roy",
+    "years": 6,
+    "source": "darwinbox"
+  },
+  {
+    "date": "2026-07-13",
+    "type": "anniversary",
+    "name": "Shubhanshu Aggarwal",
+    "years": 3,
+    "source": "darwinbox"
+  },
+  {
+    "date": "2026-07-13",
+    "type": "birthday",
+    "name": "Ajay",
+    "source": "darwinbox"
+  },
+  {
+    "date": "2026-07-13",
+    "type": "birthday",
+    "name": "Aman Verma",
+    "source": "darwinbox"
+  },
+  {
+    "date": "2026-07-13",
+    "type": "birthday",
     "name": "Amit Kumar",
-    "email": "amit.kr4@cars24.com",
-    "years": 5,
     "source": "darwinbox"
   },
   {
-    "date": "2026-07-12",
-    "type": "anniversary",
-    "name": "Anil Kumar",
-    "email": "anil.kr2@cars24.com",
-    "years": 5,
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "anniversary",
-    "name": "Atul Kumar",
-    "email": "atul.kr@cars24.com",
-    "years": 5,
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "anniversary",
-    "name": "Ayush Khanna",
-    "email": "ayush.khanna@cars24.com",
-    "years": 5,
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "anniversary",
-    "name": "Chetan Shalik Sarode",
-    "email": "chetan.sarode@cars24.com",
-    "years": 5,
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "anniversary",
-    "name": "Mahesh Dnyaneshwar Bawane",
-    "email": "mahesh.bawane@cars24.com",
-    "years": 5,
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "anniversary",
-    "name": "Nidhi Dahayat",
-    "email": "nidhi.dahayat@cars24.com",
-    "years": 5,
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "anniversary",
-    "name": "Pooja Ramkisan Mishra",
-    "email": "pooja.mishra@cars24.com",
-    "years": 5,
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "anniversary",
-    "name": "Pratik Ram Jagtap",
-    "email": "pratik.jagtap@cars24.com",
-    "years": 5,
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "anniversary",
-    "name": "Sharad Kumar",
-    "email": "sharad.kr@cars24.com",
-    "years": 5,
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
+    "date": "2026-07-13",
     "type": "birthday",
-    "name": "Adarsh Gupta",
-    "email": "adarsh.gupta@cars24.com",
+    "name": "Antim Pathak",
     "source": "darwinbox"
   },
   {
-    "date": "2026-07-12",
+    "date": "2026-07-13",
     "type": "birthday",
-    "name": "Ambar Upadhyay",
-    "email": "ambar.upadhyay@cars24.com",
+    "name": "Avid Saili",
     "source": "darwinbox"
   },
   {
-    "date": "2026-07-12",
+    "date": "2026-07-13",
     "type": "birthday",
-    "name": "Amit",
-    "email": "amit.a@cars24.com",
+    "name": "Chanchal",
     "source": "darwinbox"
   },
   {
-    "date": "2026-07-12",
+    "date": "2026-07-13",
     "type": "birthday",
-    "name": "Aniket Nandkumar Vasekar",
-    "email": "aniket.vasekar1@cars24.com",
+    "name": "Fawas K T",
     "source": "darwinbox"
   },
   {
-    "date": "2026-07-12",
+    "date": "2026-07-13",
     "type": "birthday",
-    "name": "Asif Khan",
-    "email": "asif.khan4@cars24.com",
+    "name": "G Yadagiri",
     "source": "darwinbox"
   },
   {
-    "date": "2026-07-12",
+    "date": "2026-07-13",
     "type": "birthday",
-    "name": "Ayush Khanna",
-    "email": "ayush.khanna@cars24.com",
+    "name": "Jay Rakesh Raval",
     "source": "darwinbox"
   },
   {
-    "date": "2026-07-12",
+    "date": "2026-07-13",
     "type": "birthday",
-    "name": "Balram Singh",
-    "email": "balram.singh@cars24.com",
+    "name": "Khutwad Prashant Gopal",
     "source": "darwinbox"
   },
   {
-    "date": "2026-07-12",
+    "date": "2026-07-13",
     "type": "birthday",
-    "name": "Bipin Kumar Pandey",
-    "email": "bipin.pandey2@cars24.com",
+    "name": "Manikadan R",
     "source": "darwinbox"
   },
   {
-    "date": "2026-07-12",
+    "date": "2026-07-13",
     "type": "birthday",
-    "name": "Divya Bhattu",
-    "email": "bhattu.divya@cars24.com",
+    "name": "Mohd Nabeel Hussain",
     "source": "darwinbox"
   },
   {
-    "date": "2026-07-12",
+    "date": "2026-07-13",
     "type": "birthday",
-    "name": "Harshil Parmar",
-    "email": "harshil.parmar@cars24.com",
+    "name": "Mohmmad Rafeek",
     "source": "darwinbox"
   },
   {
-    "date": "2026-07-12",
+    "date": "2026-07-13",
     "type": "birthday",
-    "name": "Jay Singh Bhadoria",
-    "email": "jay.bhadoria@cars24.com",
+    "name": "Prashant Lakhmichand Hinduja",
     "source": "darwinbox"
   },
   {
-    "date": "2026-07-12",
+    "date": "2026-07-13",
     "type": "birthday",
-    "name": "Jeya Balaji",
-    "email": "jeyabalaji.1@cars24.com",
+    "name": "Priyanka Arora",
     "source": "darwinbox"
   },
   {
-    "date": "2026-07-12",
+    "date": "2026-07-13",
     "type": "birthday",
-    "name": "Kaushik Chauhan",
-    "email": "kaushik.chauhan@cars24.com",
+    "name": "Sailendra Rajpoot",
     "source": "darwinbox"
   },
   {
-    "date": "2026-07-12",
+    "date": "2026-07-13",
     "type": "birthday",
-    "name": "Kunal Bhauso Patil",
-    "email": "kunal.patil@cars24.com",
+    "name": "Sethuram Venugopal",
     "source": "darwinbox"
   },
   {
-    "date": "2026-07-12",
+    "date": "2026-07-13",
     "type": "birthday",
-    "name": "Labana Chirag",
-    "email": "labana.chirag@cars24.com",
+    "name": "Shivkumar Shriram Chavhan",
     "source": "darwinbox"
   },
   {
-    "date": "2026-07-12",
+    "date": "2026-07-13",
     "type": "birthday",
-    "name": "Meraj Ahmed Jarar Ahmed Shaikh",
-    "email": "shaikh.ahmed3@cars24.com",
+    "name": "Sonavane Hitesh",
     "source": "darwinbox"
   },
   {
-    "date": "2026-07-12",
+    "date": "2026-07-13",
     "type": "birthday",
-    "name": "Mohammad Rafik",
-    "email": "mohammad.rafik@cars24.com",
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "birthday",
-    "name": "Naziya Abdulaabid Ansari",
-    "email": "naziya.ansari@cars24.com",
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "birthday",
-    "name": "Nirmal Kumar",
-    "email": "nirmal.kumar3@cars24.com",
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "birthday",
-    "name": "Paritosh Srivastava",
-    "email": "paritosh.srivastava@cars24.com",
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "birthday",
-    "name": "Raju Pandey",
-    "email": "raju.pandey1@cars24.com",
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "birthday",
-    "name": "Rakesh Kumar Raparthi",
-    "email": "rakesh.raparthi@cars24.com",
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "birthday",
-    "name": "Ravi A N",
-    "email": "ravian.1@cars24.com",
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "birthday",
-    "name": "Ruchi",
-    "email": "ruchi.2@cars24.com",
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "birthday",
-    "name": "Sangam Singh",
-    "email": "sangam.singh@cars24.com",
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "birthday",
-    "name": "Satendra Singh",
-    "email": "satendra.singh@cars24.com",
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "birthday",
-    "name": "Satyaprakash Bastia",
-    "email": "satyaprakash.bastia@cars24.com",
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "birthday",
-    "name": "Shaik Mulla Farooq Basha",
-    "email": "shaikmullafarooqbasha.1@cars24.com",
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "birthday",
-    "name": "Shaikh Ahmed Mohammed Arif",
-    "email": "ahmed.shaikh@cars24.com",
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "birthday",
-    "name": "Shakeel Ahmad",
-    "email": "shakeel.ahmad@cars24.com",
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "birthday",
-    "name": "Shiv Singh",
-    "email": "shiv.singh2@cars24.com",
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "birthday",
-    "name": "Shubham Singh",
-    "email": "shubham.singh16@cars24.com",
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "birthday",
-    "name": "Syed Iftikar Ali",
-    "email": "syed.ali2@cars24.com",
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "birthday",
-    "name": "Vijay Laxmi",
-    "email": "vijay.laxmi@cars24.com",
-    "source": "darwinbox"
-  },
-  {
-    "date": "2026-07-12",
-    "type": "birthday",
-    "name": "Yash Dubey",
-    "email": "yash.dubey@cars24.com",
+    "name": "Yerukula Umapathi",
     "source": "darwinbox"
   }
 ]

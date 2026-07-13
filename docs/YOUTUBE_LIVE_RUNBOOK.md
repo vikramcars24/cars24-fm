@@ -8,15 +8,18 @@ official Cars24 YouTube channel through an encoder such as OBS.
 - Source repo: `https://github.com/vikramcars24/cars24-fm`
 - Live web page: `https://vikramchopra.in/cars24-fm/`
 - Stream-mode page for OBS: `https://vikramchopra.in/cars24-fm/?autoplay=1&stream=1`
-- Local repo: `/Users/vikramchopra/Documents/cars24-fm`
+- Local repo on the current broadcaster: `/Users/vikram/Documents/cars24-fm`
+- Official channel: `https://www.youtube.com/@Cars24India`
+- Current public broadcast: `https://youtube.com/live/HkJkjHTOu4o`
 
 The app is already built for browser-source streaming. `?autoplay=1` starts the
 station after load for OBS, kiosk displays, and YouTube livestream capture.
 
-## What access is needed
+## Channel access
 
-Final publishing needs someone with access to the official Cars24 YouTube
-channel in YouTube Studio.
+The current broadcast is already published through the official Cars24 channel.
+Creating a replacement broadcast still needs YouTube Studio access for that
+channel.
 
 Required from the channel admin:
 
@@ -110,8 +113,8 @@ Lowest-risk launch path:
 3. Keep the credits page linked in the YouTube description.
 4. Keep monetization off until the channel team clears the music policy.
 
-## Operational owner split
+## Current always-on broadcaster
 
-Codex can maintain the repo, verify the web page, and prepare the OBS source.
-The Cars24 YouTube channel owner or manager must complete the final YouTube
-publishing step because it requires live channel access and a stream key.
+Run `scripts/install-office-stream.sh` on the broadcaster. It installs a macOS
+LaunchAgent that keeps the Mac awake and relaunches OBS after login or a crash.
+The stream key remains machine-local in OBS and must never be committed to Git.

@@ -1,0 +1,37 @@
+[
+  {
+    "track": "Jahzzar - Sele - 01 Eve.m4a",
+    "reason": "Could not reach the production loudness window without excessive peak limiting",
+    "measuredLufs": -16.39,
+    "measuredTruePeakDbtp": -2.37,
+    "excludedAt": "2026-07-13"
+  },
+  {
+    "track": "Jahzzar - Bunk - 04 Washing machine.m4a",
+    "reason": "Could not meet both the production loudness window and the true-peak ceiling",
+    "measuredLufs": -15.26,
+    "measuredTruePeakDbtp": 0.53,
+    "excludedAt": "2026-07-13"
+  },
+  {
+    "track": "Jahzzar - Sele - 07 Clap Your Hands.m4a",
+    "reason": "Peak-safe output remained far below the production loudness window",
+    "measuredLufs": -19.93,
+    "measuredTruePeakDbtp": -1.05,
+    "excludedAt": "2026-07-13"
+  },
+  {
+    "track": "Jahzzar - Bunk - 02 Meantime.m4a",
+    "reason": "Peak-safe output remained far below the production loudness window",
+    "measuredLufs": -17.97,
+    "measuredTruePeakDbtp": -1.18,
+    "excludedAt": "2026-07-13"
+  },
+  {
+    "track": "Loyalty Freak Music - INSTRUMENTAL R&B BEATS TO SING OR RAP ON - 15 Walking Shoes.m4a",
+    "reason": "Could not reach the production loudness window without excessive peak limiting",
+    "measuredLufs": -15.91,
+    "measuredTruePeakDbtp": -2.63,
+    "excludedAt": "2026-07-13"
+  }
+]

@@ -11,6 +11,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const musicDir = path.join(root, "music");
 const playlistPath = path.join(musicDir, "playlist.json");
 const minimumKbps = Number(process.env.MINIMUM_KBPS || 128);
+const requireLosslessSource = process.env.REQUIRE_LOSSLESS_SOURCE !== "0";
 
 async function bitrateKbps(file) {
   const { stdout } = await exec("ffprobe", [
@@ -26,13 +27,15 @@ async function main() {
   for (const name of playlist) {
     const file = path.join(musicDir, name);
     const kbps = await bitrateKbps(file);
-    if (kbps >= minimumKbps) retained.push(name);
-    else removed.push({ name, kbps });
+    const isLosslessSourcedMaster = /\.m4a$/i.test(name);
+    if (kbps < minimumKbps) removed.push({ name, kbps, reason: "below-minimum-bitrate" });
+    else if (requireLosslessSource && !isLosslessSourcedMaster) removed.push({ name, kbps, reason: "lossy-only-source" });
+    else retained.push(name);
   }
   await fs.writeFile(playlistPath, JSON.stringify(retained, null, 2) + "\n");
   await fs.mkdir(path.join(root, "build"), { recursive: true });
-  await fs.writeFile(path.join(root, "build", "quality-prune-report.json"), JSON.stringify({ minimumKbps, retained: retained.length, removed }, null, 2) + "\n");
-  console.log(`Retained ${retained.length} tracks; removed ${removed.length} playlist entries below ${minimumKbps} kbps.`);
+  await fs.writeFile(path.join(root, "build", "quality-prune-report.json"), JSON.stringify({ minimumKbps, requireLosslessSource, retained: retained.length, removed }, null, 2) + "\n");
+  console.log(`Retained ${retained.length} lossless-sourced masters; removed ${removed.length} lower-quality playlist entries.`);
 }
 
 main().catch(error => {

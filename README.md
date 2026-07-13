@@ -8,7 +8,7 @@ as a single self-contained web page.
 
 ## What's inside
 
-- **Hybrid endless audio**: 109 quality-screened Creative Commons tracks
+- **Hybrid endless audio**: 73 lossless-sourced, quality-screened Creative Commons masters
   stream from the Internet Archive, shuffled and continuous, *woven with* the
   built-in AI lo-fi engine — every few songs the station hands off to a live
   generated interlude, so the stream never repeats and never stops. If a track
@@ -62,7 +62,9 @@ https://vikramchopra.in/cars24-fm/?autoplay=1&stream=1
 ## Master the audio catalogue
 
 Create a non-destructive, stream-ready copy of every local track at 48 kHz,
-stereo, 256 kbps AAC, normalized to approximately -14 LUFS and -1 dB true peak:
+stereo, 256 kbps AAC, normalized to approximately -14 LUFS. The source
+master uses a conservative -4 dBTP ceiling so AAC output stays below the
+-1 dBTP broadcast limit after codec overshoot:
 
 ```bash
 ./scripts/master-audio.sh

@@ -1,18 +1,18 @@
 {
   "active": true,
-  "startDate": "2026-07-12",
-  "endDate": "2026-07-14",
+  "startDate": "2026-07-13",
+  "endDate": "2026-07-15",
   "triggerTime": "11:00",
-  "title": "Global Pulse May'26",
-  "headline": "Cars24 has never been stronger.",
-  "summary": "Summarizes Cars24's Global Pulse report for May 2026, highlighting key financial and operating metrics. Transaction GMV increased by 6.8% month-over-month (MoM) to rupees 729 crore. Loans disbursed rose by 5.7% MoM to rupees 317 crore, while ANR increased by 8.5% MoM to rupees 141.6 crore. EBITDA saw a significant increase of rupees 10.8 crore MoM to rupees 3.1 crore. Cars procured and sold globally also increased by 13.3% and 7.1% MoM, respectively.",
-  "sourceSlackUrl": "https://cars24.slack.com/archives/C053XTBJC/p1780752190402179",
-  "sourceChannel": "C053XTBJC",
-  "sourceTs": "1780752190.402179",
-  "sourceDate": "2026-06-06",
+  "title": "June scorecard: productivity and customer experience",
+  "headline": "Productivity improved, while customer advocacy and inventory need focus.",
+  "summary": "June's scorecard showed gains in revenue per employee, customer-facing ratio, manager span, and engineering ratio. App Store ratings remained strong and Google Business Profile ratings stabilised, while NPS and negative mentions moved the wrong way. The immediate operating priorities are fixing customer pain in Retail, Challan, and Lending, reducing negative conversations, and reversing inventory build-up through July and August.",
+  "sourceSlackUrl": "https://cars24.slack.com/archives/C08H5FPA3D4/p1783004705952669",
+  "sourceChannel": "C08H5FPA3D4",
+  "sourceTs": "1783004705.952669",
+  "sourceDate": "2026-07-02",
   "audio": {
-    "intro": "business-update/2026-07-12-intro.mp3",
+    "intro": "business-update/2026-07-13-intro.mp3",
     "bed": "business-update/2026-06-18-bed.mp3"
   },
-  "generatedAt": "2026-07-12T16:46:00.021Z"
+  "generatedAt": "2026-07-13T08:56:14.398Z"
 }
