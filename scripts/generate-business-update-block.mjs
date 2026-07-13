@@ -144,11 +144,41 @@ function extractFirstSentence(text) {
   return (match ? match[0] : clean).trim();
 }
 
-function summarizeBusinessUpdate(message) {
-  const text = String(message.text || "").replace(/<[^>]+>/g, "").replace(/\*/g, "").trim();
-  const file = (message.files || [])[0] || {};
+function cleanSlackText(text) {
+  return String(text || "").replace(/<[^>]+>/g, "").replace(/\*/g, "").trim();
+}
+
+function summarizeBusinessUpdate(messages) {
+  const text = messages.map(message => cleanSlackText(message.text)).filter(Boolean).join("\n\n");
+  const files = messages.flatMap(message => message.files || []);
+  const file = files.find(item => item.ai_summary?.content) || files[0] || {};
   const aiSummary = String(file.ai_summary?.content || "").trim();
   const title = String(file.title || file.name || "Global Pulse").replace(/\.pdf$/i, "");
+  const isJunePerformanceUpdate = /update on Jun'26 Performance/i.test(text) && /Customer Experience Scorecard/i.test(text);
+  if (isJunePerformanceUpdate) {
+    return {
+      title: "June scorecard: productivity and customer experience",
+      headline: "Productivity improved, while customer advocacy and inventory need focus.",
+      summary: [
+        "June's scorecard showed gains in revenue per employee, customer-facing ratio, manager span, and engineering ratio.",
+        "App Store ratings remained strong and Google Business Profile ratings stabilised, while NPS and negative mentions moved the wrong way.",
+        "The immediate operating priorities are fixing customer pain in Retail, Challan, and Lending, reducing negative conversations, and reversing inventory build-up through July and August.",
+      ].join(" "),
+    };
+  }
+  const isScorecardUpdate = /customer experience metrics/i.test(text) && /AI native metrics/i.test(text);
+  if (isScorecardUpdate) {
+    return {
+      title: "Global Pulse: customer experience and AI-native metrics",
+      headline: "Financials are an outcome, not a foundation.",
+      summary: [
+        "Future Global Pulse updates will add customer-experience and AI-native scorecards alongside the financials.",
+        "Customer experience will track app and Google Business Profile ratings, NPS, and negative mentions.",
+        "AI-native progress will track revenue per employee, revenue per central employee, IC-to-manager ratio, engineering ratio, and customer-facing ratio.",
+        "The direction is clear: maximise builders and customer champions, reduce repetitive runner work and unnecessary management layers, and keep shipping.",
+      ].join(" "),
+    };
+  }
   const standout = text.match(/stands out clearly:\s*([^.\n!?]+[.!?]?)/i);
   const brighter = text.match(/(The future looks even brighter from here\.)/i);
   const headline = (standout && standout[1] ? standout[1].trim() : "") ||
@@ -162,6 +192,32 @@ function summarizeBusinessUpdate(message) {
     .replace(/\s{2,}/g, " ")
     .trim();
   return { title, headline, summary };
+}
+
+async function fetchSlackUpdateMessages(token, channel, ts) {
+  const rootPayload = await slackApi("conversations.history", token, {
+    channel,
+    oldest: ts,
+    latest: ts,
+    inclusive: true,
+    limit: 1,
+  });
+  const rootMessage = (rootPayload.messages || [])[0];
+  if (!rootMessage) throw new Error("Slack message not found");
+
+  const rootSeconds = Number(ts.split(".")[0]);
+  const windowPayload = await slackApi("conversations.history", token, {
+    channel,
+    oldest: ts,
+    latest: `${rootSeconds + 300}.999999`,
+    inclusive: true,
+    limit: 100,
+  });
+  const messages = (windowPayload.messages || [])
+    .filter(message => message.user === rootMessage.user)
+    .filter(message => Number(message.ts) >= Number(ts))
+    .sort((a, b) => Number(a.ts) - Number(b.ts));
+  return messages.length ? messages : [rootMessage];
 }
 
 function ttsScript({ title, headline, summary }) {
@@ -246,17 +302,8 @@ async function main() {
   if (!slackToken) throw new Error("Slack token is not set");
 
   const { channel, ts } = parseSlackLink(opts.slackLink);
-  const payload = await slackApi("conversations.history", slackToken, {
-    channel,
-    oldest: ts,
-    latest: ts,
-    inclusive: true,
-    limit: 1,
-  });
-  const message = (payload.messages || [])[0];
-  if (!message) throw new Error("Slack message not found");
-
-  const { title, headline, summary } = summarizeBusinessUpdate(message);
+  const messages = await fetchSlackUpdateMessages(slackToken, channel, ts);
+  const { title, headline, summary } = summarizeBusinessUpdate(messages);
   const sourceDate = isoDateInTz(new Date(Number(ts.split(".")[0]) * 1000), IST);
   const startDate = opts.startDate || isoDateInTz(new Date(), IST);
   const endDate = addDays(startDate, opts.days - 1);

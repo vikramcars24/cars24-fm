@@ -12,6 +12,16 @@ const musicDir = path.join(root, "music");
 const playlistPath = path.join(musicDir, "playlist.json");
 const downloadDir = path.join(root, "build", "lossless-originals");
 
+// Some source MP3s store a shortened archive.org identifier in their comment
+// tag. Keep the repair explicit so we only download from the verified album.
+const archiveIdentifierAliases = new Map([
+  ["BrokeForFreeLayer", "BrokeForFreeLayers"],
+  ["KaiEngelTheRu", "KaiEngelTheRun"],
+  ["Jahzzar_Sel", "Jahzzar_Sele"],
+  ["MusicForPodcasts0:Music for Podcasts 2", "MusicForPodcasts02"],
+  ["MusicForPodcasts0:Music for Podcasts 4", "MusicForPodcasts04"],
+]);
+
 function normalize(value) {
   return value.toLowerCase().replace(/\.[^.]+$/, "").normalize("NFKD").replace(/[^a-z0-9]+/g, " ").trim();
 }
@@ -30,13 +40,20 @@ function pickFlac(localName, title, files) {
     ? flacs.filter(file => new RegExp(`(?:^| - )${track[1]}(?: | -)`).test(file.name))
     : [];
   if (candidates.length !== 1) {
-    const local = normalize(title || localName);
+    const localCandidates = [title, localName].map(normalize).filter(Boolean);
     candidates = flacs.filter(file => {
       const remote = normalize(file.name);
-      return remote.includes(local) || local.includes(remote);
+      return localCandidates.some(local => remote.includes(local) || local.includes(remote));
     });
   }
   return candidates.length === 1 ? candidates[0] : null;
+}
+
+function resolveArchiveIdentifier(identifier, localName) {
+  const album = localName.split(" - ")[1] || "";
+  return archiveIdentifierAliases.get(`${identifier}:${album}`)
+    || archiveIdentifierAliases.get(identifier)
+    || identifier;
 }
 
 async function download(url, destination) {
@@ -72,8 +89,9 @@ async function main() {
       continue;
     }
     const tags = await probe(localPath);
-    const identifier = String(tags.comment || "").match(/archive\.org\/details\/([^\s\r]+)/)?.[1];
-    if (!identifier) continue;
+    const taggedIdentifier = String(tags.comment || "").match(/archive\.org\/details\/([^\s\r]+)/)?.[1];
+    if (!taggedIdentifier) continue;
+    const identifier = resolveArchiveIdentifier(taggedIdentifier, localName);
 
     if (!metadataCache.has(identifier)) {
       const metadataResponse = await fetch(`https://archive.org/metadata/${encodeURIComponent(identifier)}`);
@@ -103,7 +121,7 @@ async function main() {
         await exec("ffmpeg", [
           "-hide_banner", "-loglevel", "error", "-y", "-i", losslessPath,
           "-map", "0:a:0", "-vn",
-          "-af", "loudnorm=I=-14:TP=-1:LRA=9,alimiter=limit=0.891251",
+          "-af", "loudnorm=I=-14:TP=-4:LRA=9,aresample=48000",
           "-ar", "48000", "-ac", "2", "-c:a", "aac", "-b:a", "256k", nextPath,
         ], { maxBuffer: 2_000_000 });
         playlist[index] = nextName;

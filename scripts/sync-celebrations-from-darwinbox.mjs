@@ -114,15 +114,14 @@ async function main() {
     for (const emp of activeEmployees(payload)) {
       const name = String(emp.full_name || "").trim();
       if (!name) continue;
-      const email = String(emp.company_email_id || "").trim().toLowerCase();
       if (md(emp.date_of_birth) === targetMd) {
-        celebrations.push({ date: opts.date, type: "birthday", name, email, source: "darwinbox" });
+        celebrations.push({ date: opts.date, type: "birthday", name, source: "darwinbox" });
       }
       if (md(emp.date_of_joining) === targetMd) {
         const joinedYear = year(emp.date_of_joining);
         const years = joinedYear ? targetYear - joinedYear : 0;
         if (years >= 1) {
-          celebrations.push({ date: opts.date, type: "anniversary", name, email, years, source: "darwinbox" });
+          celebrations.push({ date: opts.date, type: "anniversary", name, years, source: "darwinbox" });
         }
       }
     }

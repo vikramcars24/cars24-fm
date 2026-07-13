@@ -1,14 +1,14 @@
 {
-  "build": "2026-07-12a",
-  "tracks": 109,
+  "build": "2026-07-13a",
+  "tracks": 73,
   "dayparting": true,
   "useRemoteTracks": true,
   "hosting": "github-pages-relative",
   "trackResolution": "bare filename -> music/<encoded>; absolute http(s) URLs used as-is",
   "djVoice": "elevenlabs-prerendered (music/dj/, manifest.json)",
-  "elevenlabsMusic": "enabled as a build-time local generator via scripts/generate-eleven-music.mjs for Cars24 FM Originals",
+  "elevenlabsMusic": "generator is ready, but the current Agent-Ops API account still returns limited_access for Music; existing licensed beds remain in use",
   "birthdayBlock": "enabled as a build-time celebration generator via scripts/generate-birthday-block.mjs; supports birthdays and anniversaries at 10:00 AM IST once per day",
-  "businessUpdateBlock": "enabled as a build-time Global Pulse generator via scripts/generate-business-update-block.mjs; airs once per day at 11:00 AM IST for a short post-update window",
+  "businessUpdateBlock": "enabled as a build-time leadership-scorecard generator via scripts/generate-business-update-block.mjs; airs once per day at 11:00 AM IST for a short post-update window",
   "parked": [],
   "canonicalVersionLocation": "index.html build label (search: 'build 2026-')",
   "note": "Source of truth is git, not any session report. Keep this file in sync with the index.html build label on every change."

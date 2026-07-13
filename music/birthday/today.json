@@ -1,282 +1,144 @@
 {
-  "date": "2026-07-12",
+  "date": "2026-07-13",
   "timezone": "Asia/Kolkata",
   "triggerTime": "10:00",
   "celebrations": [
     {
-      "date": "2026-07-12",
+      "date": "2026-07-13",
       "type": "anniversary",
+      "name": "Aboni Roy",
+      "years": 6
+    },
+    {
+      "date": "2026-07-13",
+      "type": "anniversary",
+      "name": "Shubhanshu Aggarwal",
+      "years": 3
+    },
+    {
+      "date": "2026-07-13",
+      "type": "birthday",
+      "name": "Ajay",
+      "years": 0
+    },
+    {
+      "date": "2026-07-13",
+      "type": "birthday",
+      "name": "Aman Verma",
+      "years": 0
+    },
+    {
+      "date": "2026-07-13",
+      "type": "birthday",
       "name": "Amit Kumar",
-      "years": 5
-    },
-    {
-      "date": "2026-07-12",
-      "type": "anniversary",
-      "name": "Anil Kumar",
-      "years": 5
-    },
-    {
-      "date": "2026-07-12",
-      "type": "anniversary",
-      "name": "Atul Kumar",
-      "years": 5
-    },
-    {
-      "date": "2026-07-12",
-      "type": "anniversary",
-      "name": "Ayush Khanna",
-      "years": 5
-    },
-    {
-      "date": "2026-07-12",
-      "type": "anniversary",
-      "name": "Chetan Shalik Sarode",
-      "years": 5
-    },
-    {
-      "date": "2026-07-12",
-      "type": "anniversary",
-      "name": "Mahesh Dnyaneshwar Bawane",
-      "years": 5
-    },
-    {
-      "date": "2026-07-12",
-      "type": "anniversary",
-      "name": "Nidhi Dahayat",
-      "years": 5
-    },
-    {
-      "date": "2026-07-12",
-      "type": "anniversary",
-      "name": "Pooja Ramkisan Mishra",
-      "years": 5
-    },
-    {
-      "date": "2026-07-12",
-      "type": "anniversary",
-      "name": "Pratik Ram Jagtap",
-      "years": 5
-    },
-    {
-      "date": "2026-07-12",
-      "type": "anniversary",
-      "name": "Sharad Kumar",
-      "years": 5
-    },
-    {
-      "date": "2026-07-12",
-      "type": "birthday",
-      "name": "Adarsh Gupta",
       "years": 0
     },
     {
-      "date": "2026-07-12",
+      "date": "2026-07-13",
       "type": "birthday",
-      "name": "Ambar Upadhyay",
+      "name": "Antim Pathak",
       "years": 0
     },
     {
-      "date": "2026-07-12",
+      "date": "2026-07-13",
       "type": "birthday",
-      "name": "Amit",
+      "name": "Avid Saili",
       "years": 0
     },
     {
-      "date": "2026-07-12",
+      "date": "2026-07-13",
       "type": "birthday",
-      "name": "Aniket Nandkumar Vasekar",
+      "name": "Chanchal",
       "years": 0
     },
     {
-      "date": "2026-07-12",
+      "date": "2026-07-13",
       "type": "birthday",
-      "name": "Asif Khan",
+      "name": "Fawas K T",
       "years": 0
     },
     {
-      "date": "2026-07-12",
+      "date": "2026-07-13",
       "type": "birthday",
-      "name": "Ayush Khanna",
+      "name": "G Yadagiri",
       "years": 0
     },
     {
-      "date": "2026-07-12",
+      "date": "2026-07-13",
       "type": "birthday",
-      "name": "Balram Singh",
+      "name": "Jay Rakesh Raval",
       "years": 0
     },
     {
-      "date": "2026-07-12",
+      "date": "2026-07-13",
       "type": "birthday",
-      "name": "Bipin Kumar Pandey",
+      "name": "Khutwad Prashant Gopal",
       "years": 0
     },
     {
-      "date": "2026-07-12",
+      "date": "2026-07-13",
       "type": "birthday",
-      "name": "Divya Bhattu",
+      "name": "Manikadan R",
       "years": 0
     },
     {
-      "date": "2026-07-12",
+      "date": "2026-07-13",
       "type": "birthday",
-      "name": "Harshil Parmar",
+      "name": "Mohd Nabeel Hussain",
       "years": 0
     },
     {
-      "date": "2026-07-12",
+      "date": "2026-07-13",
       "type": "birthday",
-      "name": "Jay Singh Bhadoria",
+      "name": "Mohmmad Rafeek",
       "years": 0
     },
     {
-      "date": "2026-07-12",
+      "date": "2026-07-13",
       "type": "birthday",
-      "name": "Jeya Balaji",
+      "name": "Prashant Lakhmichand Hinduja",
       "years": 0
     },
     {
-      "date": "2026-07-12",
+      "date": "2026-07-13",
       "type": "birthday",
-      "name": "Kaushik Chauhan",
+      "name": "Priyanka Arora",
       "years": 0
     },
     {
-      "date": "2026-07-12",
+      "date": "2026-07-13",
       "type": "birthday",
-      "name": "Kunal Bhauso Patil",
+      "name": "Sailendra Rajpoot",
       "years": 0
     },
     {
-      "date": "2026-07-12",
+      "date": "2026-07-13",
       "type": "birthday",
-      "name": "Labana Chirag",
+      "name": "Sethuram Venugopal",
       "years": 0
     },
     {
-      "date": "2026-07-12",
+      "date": "2026-07-13",
       "type": "birthday",
-      "name": "Meraj Ahmed Jarar Ahmed Shaikh",
+      "name": "Shivkumar Shriram Chavhan",
       "years": 0
     },
     {
-      "date": "2026-07-12",
+      "date": "2026-07-13",
       "type": "birthday",
-      "name": "Mohammad Rafik",
+      "name": "Sonavane Hitesh",
       "years": 0
     },
     {
-      "date": "2026-07-12",
+      "date": "2026-07-13",
       "type": "birthday",
-      "name": "Naziya Abdulaabid Ansari",
-      "years": 0
-    },
-    {
-      "date": "2026-07-12",
-      "type": "birthday",
-      "name": "Nirmal Kumar",
-      "years": 0
-    },
-    {
-      "date": "2026-07-12",
-      "type": "birthday",
-      "name": "Paritosh Srivastava",
-      "years": 0
-    },
-    {
-      "date": "2026-07-12",
-      "type": "birthday",
-      "name": "Raju Pandey",
-      "years": 0
-    },
-    {
-      "date": "2026-07-12",
-      "type": "birthday",
-      "name": "Rakesh Kumar Raparthi",
-      "years": 0
-    },
-    {
-      "date": "2026-07-12",
-      "type": "birthday",
-      "name": "Ravi A N",
-      "years": 0
-    },
-    {
-      "date": "2026-07-12",
-      "type": "birthday",
-      "name": "Ruchi",
-      "years": 0
-    },
-    {
-      "date": "2026-07-12",
-      "type": "birthday",
-      "name": "Sangam Singh",
-      "years": 0
-    },
-    {
-      "date": "2026-07-12",
-      "type": "birthday",
-      "name": "Satendra Singh",
-      "years": 0
-    },
-    {
-      "date": "2026-07-12",
-      "type": "birthday",
-      "name": "Satyaprakash Bastia",
-      "years": 0
-    },
-    {
-      "date": "2026-07-12",
-      "type": "birthday",
-      "name": "Shaik Mulla Farooq Basha",
-      "years": 0
-    },
-    {
-      "date": "2026-07-12",
-      "type": "birthday",
-      "name": "Shaikh Ahmed Mohammed Arif",
-      "years": 0
-    },
-    {
-      "date": "2026-07-12",
-      "type": "birthday",
-      "name": "Shakeel Ahmad",
-      "years": 0
-    },
-    {
-      "date": "2026-07-12",
-      "type": "birthday",
-      "name": "Shiv Singh",
-      "years": 0
-    },
-    {
-      "date": "2026-07-12",
-      "type": "birthday",
-      "name": "Shubham Singh",
-      "years": 0
-    },
-    {
-      "date": "2026-07-12",
-      "type": "birthday",
-      "name": "Syed Iftikar Ali",
-      "years": 0
-    },
-    {
-      "date": "2026-07-12",
-      "type": "birthday",
-      "name": "Vijay Laxmi",
-      "years": 0
-    },
-    {
-      "date": "2026-07-12",
-      "type": "birthday",
-      "name": "Yash Dubey",
+      "name": "Yerukula Umapathi",
       "years": 0
     }
   ],
   "audio": {
-    "intro": "birthday/2026-07-12-intro.mp3",
+    "intro": "birthday/2026-07-13-intro.mp3",
     "bed": "birthday/2026-06-18-bed.mp3"
   },
-  "generatedAt": "2026-07-12T15:33:24.293Z"
+  "generatedAt": "2026-07-13T08:05:51.690Z"
 }

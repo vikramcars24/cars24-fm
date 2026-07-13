@@ -302,7 +302,7 @@
       Lee Rosevere, Broke For Free &amp; Kai Engel; CC&nbsp;BY-SA by Jahzzar.
       Full attribution in <a href="CREDITS.md" target="_blank" rel="noopener">CREDITS.md</a>.
       <br>DJ voice generated with ElevenLabs.
-      <br><span style="opacity:.6">build 2026-07-12a · stream mode + mastered output protection + celebrations at 10 AM IST + Global Pulse at 11 AM IST</span>
+      <br><span style="opacity:.6">build 2026-07-13a · lossless-sourced catalogue + separate DJ processing + celebrations at 10 AM IST + business scorecard at 11 AM IST</span>
     </div>
   </div>
 </div>
@@ -1072,15 +1072,12 @@ function initAudio() {
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
   const master = ctx.createGain();
   master.gain.value = audio.volume;
-  const tone = ctx.createBiquadFilter();
-  tone.type = 'lowpass';
-  tone.frequency.value = 3400;
   const comp = ctx.createDynamicsCompressor();
-  comp.threshold.value = -20;
-  comp.knee.value = 12;
-  comp.ratio.value = 3.5;
+  comp.threshold.value = -16;
+  comp.knee.value = 10;
+  comp.ratio.value = 2;
   comp.attack.value = 0.012;
-  comp.release.value = 0.22;
+  comp.release.value = 0.25;
   const limiter = ctx.createDynamicsCompressor();
   limiter.threshold.value = -2;
   limiter.knee.value = 0;
@@ -1093,13 +1090,32 @@ function initAudio() {
   // without touching the user's volume (which lives on master.gain).
   const duck = ctx.createGain();
   duck.gain.value = 1;
-  master.connect(duck).connect(tone).connect(comp).connect(limiter).connect(analyser).connect(ctx.destination);
+  master.connect(duck).connect(comp).connect(limiter).connect(analyser).connect(ctx.destination);
   audio.duck = duck;
-  // DJ voice bus: connects AFTER the duck, so when we dip the music to talk the
-  // voice itself stays full. Goes through the same comp/analyser → captured by OBS.
+  // DJ voice bus: connects after the duck so the voice stays full. Keep speech
+  // processing separate from the music so its EQ never dulls the catalogue.
   const djGain = ctx.createGain();
   djGain.gain.value = 0.88;
-  djGain.connect(tone);                         // dry voice
+  const voiceHighpass = ctx.createBiquadFilter();
+  voiceHighpass.type = 'highpass';
+  voiceHighpass.frequency.value = 90;
+  voiceHighpass.Q.value = 0.7;
+  const voicePresence = ctx.createBiquadFilter();
+  voicePresence.type = 'peaking';
+  voicePresence.frequency.value = 2400;
+  voicePresence.Q.value = 0.8;
+  voicePresence.gain.value = 1.8;
+  const voiceDeEss = ctx.createBiquadFilter();
+  voiceDeEss.type = 'highshelf';
+  voiceDeEss.frequency.value = 6500;
+  voiceDeEss.gain.value = -3;
+  const voiceComp = ctx.createDynamicsCompressor();
+  voiceComp.threshold.value = -18;
+  voiceComp.knee.value = 8;
+  voiceComp.ratio.value = 3.5;
+  voiceComp.attack.value = 0.004;
+  voiceComp.release.value = 0.14;
+  djGain.connect(voiceHighpass).connect(voicePresence).connect(voiceDeEss).connect(voiceComp).connect(limiter);
   // short reverb send so the voice sits INSIDE the mix, not pasted dry on top —
   // synthetic impulse (exponentially-decaying noise) keeps it self-contained.
   const verb = ctx.createConvolver();
@@ -1110,7 +1126,7 @@ function initAudio() {
   verbHi.type = 'lowpass'; verbHi.frequency.value = 3200;
   const verbGain = ctx.createGain();
   verbGain.gain.value = 0.18;
-  djGain.connect(verb).connect(verbHi).connect(verbGain).connect(tone);
+  djGain.connect(verb).connect(verbHi).connect(verbGain).connect(voiceComp);
   audio.djGain = djGain;
   audio.analyser = analyser;
   audio.levels = new Uint8Array(analyser.frequencyBinCount);
